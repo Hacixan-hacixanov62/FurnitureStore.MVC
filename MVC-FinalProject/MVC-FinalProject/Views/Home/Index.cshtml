@@ -1,0 +1,464 @@
+﻿@model HomeVM
+
+
+@await Component.InvokeAsync("Header", new { searchQuery = ViewBag.SearchQuery })
+
+
+<div id="site-main" class="site-main">
+	<div id="main-content" class="main-content">
+		<div id="primary" class="content-area">
+			<div id="content" class="site-content" role="main">
+				@if (Model.Sliders != null && Model.Sliders.Any())
+				{
+					<section class="section m-b-80">
+						<!-- Block Sliders -->
+						<div class="block block-sliders layout-7 auto-height nav-center">
+							<div class="slick-sliders" data-autoplay="false" data-dots="true" data-nav="false" data-columns4="1" data-columns3="1" data-columns2="1" data-columns1="1" data-columns1440="1" data-columns="1">
+								@foreach (var item in Model.Sliders.OrderByDescending(c => c.CreatedDate).Take(3))
+								{
+									<div class="item slick-slide">
+										<div class="item-content">
+											<div class="content-image">
+												<img width="1920" height="1080" src="@item.Image" alt="Image Slider">
+											</div>
+											<div class="item-info horizontal-end vertical-middle">
+												<div class="content">
+													<h2 class="title-slider">@item.Title</h2>
+													<div class="description-slider">@item.Description</div>
+													<a class="button-slider button-white" asp-controller="Shop" asp-action="Index">SHOP NOW</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								}
+							</div>
+						</div>
+					</section>
+				}
+
+				@if (Model.Categories != null && Model.Categories.Any())
+				{
+					<section class="section section-padding m-b-70">
+						<div class="section-container">
+							<!-- Block Product Categories -->
+							<div class="block block-product-cats layout-2">
+								<div class="block-widget-wrap">
+									<div class="block-title"><h2>Furniture to Warm Up Your Space</h2></div>
+									<div class="block-content">
+										<div class="row">
+											@foreach (var item in Model.Categories.OrderByDescending(c => c.CreatedDate).Take(4))
+											{
+												<div class="col-md-3 sm-m-b-30">
+													<div class="cat-item">
+														<div class="cat-image">															
+															<a href="/Shop/Index?categoryName=@Uri.EscapeDataString(item.Name)">
+																<img width="303" height="366" src="@item.Image" alt="Product Category">
+															</a>
+														</div>
+														<div class="cat-title">
+															<a href="shop-grid-left.html">
+																<h3>@item.Name</h3>
+															</a>
+														</div>
+													</div>
+												</div>
+											}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+				}
+
+				@if (Model.Products != null && Model.Products.Any())
+				{
+					<section class="section section-padding top-border p-t-70">
+						<div class="section-container">
+							<!-- Block Products -->
+							<div class="block block-products">
+								<div class="block-widget-wrap">
+								
+									<div class="tab-content">
+										<div class="tab-pane fade show active" id="top-rating" role="tabpanel">
+											<div class="products-list grid">
+												<div class="row">
+
+													@foreach (var item in Model.Products.OrderByDescending(x => x.CreatedDate).Take(8))
+													{
+														<div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+															<div class="items">
+																<div class="products-entry clearfix product-wapper">
+																	<div class="products-thumb">
+																		<div class="product-lable">
+																			<div class="hot">@item.Tags.FirstOrDefault()</div>
+																		</div>
+																		<div class="product-thumb-hover">
+																			<a asp-controller="ProductDetail" asp-action="Detail" asp-route-id="@item.Id">
+																				<img width="600" height="600" src="@item.MainImage" class="post-image" alt="">
+
+																				@{
+																					var hoverImage = item.Images.FirstOrDefault(img => img != item.MainImage) ?? item.MainImage;
+																				}
+
+																				<img width="600" height="600" src="@hoverImage" class="hover-image back" alt="">
+																			</a>
+																		</div>
+																		<div class="product-button" data-title="Wishlist">
+																			@* <form asp-controller="Wishlist" asp-action="AddToWishlist" method="post"> *@
+																			@* 	<input type="hidden" name="productId" value="@item.Id" /> *@
+																			@* 	<button type="submit" class="product-btn">Add to wishlist</button> *@
+																			@* </form> *@
+																			<button type="button"
+																					class="product-btn add-to-wishlist"
+																					data-product-id="@item.Id">
+																				Add to wishlist
+																			</button>
+
+
+																			<div class="btn-compare" data-title="Compare" data-category-id="@item.CategoryId">
+																				<button class="product-btn" data-product-id="@item.Id">Compare</button>
+																			</div>
+
+																			<span class="product-quickview" data-title="Quick View">
+																				<a asp-controller="ProductDetail" asp-action="Detail" asp-route-id="@item.Id" >Quick View <i class="icon-search"></i></a>
+																			</span>
+																		</div>
+																	</div>
+																	<div class="products-content">
+																		<div class="contents text-center">
+																			<h3 class="product-title"><a asp-controller="ProductDetail" asp-action="Detail" asp-route-id="@item.Id">@item.Name</a></h3>
+																			<span class="price">$@item.Price</span>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>														
+													}
+
+
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+				}
+
+				@if (Model.LandingBanners != null && Model.LandingBanners.Any())
+				{
+					<section class="section content-outside background-1">
+						<!-- Block Banners (Slider) -->
+						<div class="block block-banners slider fullwidth">
+							<div class="section-column-wrap">
+								<div class="block-widget-wrap">
+									<div class="slick-wrap">
+										<div class="slick-sliders" data-centermode="true" data-nav="true" data-dots="false" data-columns4="1" data-columns3="1" data-columns2="1" data-columns1="1" data-columns="1">
+											@foreach (var item in Model.LandingBanners.OrderByDescending(x=>x.CreatedDate).Take(3))
+											{
+												<div class="item slick-slide">
+													<div class="block-widget-banner">
+														<div class="bg-banner">
+															<div class="banner-wrapper banners">
+																<div class="banner-image">
+																	<a href="shop-grid-left.html">
+																		<img width="1080" height="584" src="@item.Image" alt="Image Slider">
+																	</a>
+																</div>
+																<div class="banner-wrapper-infor">
+																	<div class="info">
+																		<div class="content">
+																			<a class="link-title" href="shop-grid-left.html">
+																				<h3 class="title-banner">@item.Title</h3>
+																			</a>
+																			<div class="banner-image-description">
+																				@item.Description				
+																			</div>
+																			<a class="button button-outline"asp-controller="Shop" asp-action="Index">Shop Now</a>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+
+											}
+
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+				}			
+
+				<section class="section section-padding top-border p-t-50 p-b-50 m-b-0">
+					<div class="section-container">
+						<div class="row sm-m-0">
+							<div class="col-md-6 sm-m-b-50 sm-p-0">
+								<div class="block block-newsletter layout-2 one-col align-left position-center">
+									<div class="block-widget-wrap">
+										<div class="newsletter-title-wrap">
+											<h2 class="newsletter-title">Join our email list.</h2>
+											<div class="newsletter-text">Sign up for the latest trends, products, and inspiration.</div>
+										</div>
+
+										<form id="subscribeForm" method="post" class="newsletter-form">
+											@Html.AntiForgeryToken()
+											<div class="form-group" style="display: flex; gap: 2px; align-items: center;">
+												<input name="email" class="form-control" placeholder="Email address" style="flex: 3; min-width: 19pc; min-height: 3pc" />
+												<button type="submit" class="btn subscribe-button" style="flex-shrink: 0;">SUBSCRIBE</button>
+											</div>
+										</form>
+										<div id="subscribe-message" class="mt-2"></div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6 sm-p-0">
+								@if (Model.SubscribeImgs != null && Model.SubscribeImgs.Any())
+								{
+									<div class="block block-image text-center position-relative">
+										<img width="671" height="503" src="@Model.SubscribeImgs.OrderByDescending(x => x.CreatedDate).FirstOrDefault()?.Img" alt="">
+										<img class="animation-round position-v-top position-h-center" width="106" height="105" src="~/assets/img/@Model.Settings.FirstOrDefault(x => x.Key == "LogoCircle")?.Value" alt="">
+									</div>
+								}
+							</div>
+						</div>
+					</div>
+				</section>
+				@if (Model.Instagrams != null && Model.Instagrams.Any())
+			    {
+				<section class="section section-padding m-b-70">
+					<div class="section-container">
+						<div class="block-widget-wrap">
+							<!-- Block Instagram -->
+							@{
+								var latestProducts = Model.Products.OrderByDescending(x => x.CreatedDate).Take(2).ToList();
+							}
+							<div class="block block-lookbook">
+								<div class="lookbook-wrap default">
+									<div class="lookbook-container">
+										<div class="lookbook-content">
+											<div class="item">
+												<img width="869" height="702" style="margin-top: 10pc;" src="@Model.Instagrams.OrderByDescending(x => x.CreatedDate).FirstOrDefault()?.Img" alt="Look Ig">
+
+												@for (int i = 0; i < latestProducts.Count; i++)
+												{
+													<div class="item-lookbook" style="height:30px;width:30px;@(i == 0 ? "left:29.55%;top:54.27%" : "left:53.69%;top:79.16%")">
+														<span class="number-lookbook">@(i + 1)</span>
+														<div class="content-lookbook" style="@(i == 0 ? "left:33px; bottom:10px;" : "right:33px; bottom:10px;")">
+															<div class="item-thumb">
+																	<a asp-controller="ProductDetail" asp-action="Detail" asp-route-id="@latestProducts[i].Id">
+																	<img width="1000" height="1000" src="@latestProducts[i].MainImage" alt="">
+																</a>
+															</div>
+															<div class="content-lookbook-bottom">
+																<div class="item-title">
+																	<span>@latestProducts[i].Name</span>
+																</div>
+																<span class="price">
+																	<ins><span>$@latestProducts[i].Price</span></ins>
+																</span>
+															</div>
+														</div>
+													</div>
+												}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</section>
+				}
+
+				<section class="section section-padding p-t-70 m-b-70">
+					<div class="section-container">
+						<!-- Block Feature -->
+						<div class="block block-feature layout-2">
+							<div class="block-widget-wrap">
+								<div class="row">
+									<div class="col-md-4 sm-m-b-50">
+										<div class="box">
+											<div class="box-icon">
+												<span>
+													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="svg-icon plant" x="0" y="0" viewBox="0 0 64 64" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><g xmlns="http://www.w3.org/2000/svg" id="Shipping"><path d="M54.416,37.9a3.906,3.906,0,0,0-1.665-1.562,4,4,0,0,0-3.8.1L38.915,42.227A3.978,3.978,0,0,0,37.657,40a4.062,4.062,0,0,0-2.667-1H28.829a1,1,0,0,1-.708-.293l-.244-.244A4.964,4.964,0,0,0,24.345,37H16.66c-.151,0-.3.01-.5.025a5,5,0,0,0-3.039,1.438L10.5,41.086l-.933-.933a1,1,0,0,0-1.414,0L2.494,45.8a1,1,0,0,0,0,1.415l14.139,14.15a1,1,0,0,0,1.415,0l5.66-5.66a1,1,0,0,0,0-1.414l-.793-.793.207-.207A1,1,0,0,1,23.829,53h11.1a4.933,4.933,0,0,0,2.5-.674l15.52-8.96a3.96,3.96,0,0,0,2-3.466A4.018,4.018,0,0,0,54.416,37.9ZM17.34,59.246,4.615,46.511l4.244-4.238L21.586,55ZM51.95,41.634,36.422,50.6a2.941,2.941,0,0,1-1.492.4h-11.1a2.978,2.978,0,0,0-2.122.879l-.207.207L11.914,42.5l2.623-2.623a2.988,2.988,0,0,1,1.807-.86c.11-.009.213-.017.316-.017h7.685a2.979,2.979,0,0,1,2.118.877l.244.244A2.978,2.978,0,0,0,28.829,41H34.99a2.048,2.048,0,0,1,1.344.5,1.962,1.962,0,0,1,.66,1.287,1.9,1.9,0,0,1-.133.92,1.809,1.809,0,0,1-.448.709A1.983,1.983,0,0,1,35,45H28.42a1,1,0,0,0,0,2H35a3.973,3.973,0,0,0,2.827-1.173,3.829,3.829,0,0,0,.781-1.113l11.338-6.546a2.014,2.014,0,0,1,1.914-.04,1.929,1.929,0,0,1,.823.77,2.015,2.015,0,0,1,.267,1A1.983,1.983,0,0,1,51.95,41.634Z" fill="" data-original="" style=""></path><path d="M15,34H51a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H15a1,1,0,0,0-1,1V33A1,1,0,0,0,15,34ZM35,4v8H31V4ZM16,4H29v9a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4H50V32H16Z" fill="" data-original="" style=""></path><path d="M25,28H19a1,1,0,0,0,0,2h6a1,1,0,0,0,0-2Z" fill="" data-original="" style=""></path><path d="M25,25H19a1,1,0,0,0,0,2h6a1,1,0,0,0,0-2Z" fill="" data-original="" style=""></path><path d="M29,25H28a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Z" fill="" data-original="" style=""></path><path d="M25,22H19a1,1,0,0,0,0,2h6a1,1,0,0,0,0-2Z" fill="" data-original="" style=""></path><path d="M29,22H28a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Z" fill="" data-original="" style=""></path><path d="M29,28H28a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Z" fill="" data-original="" style=""></path><path d="M47,24H37a1,1,0,0,0-1,1v4a1,1,0,0,0,1,1H47a1,1,0,0,0,1-1V25A1,1,0,0,0,47,24Zm-1,4H38V26h8Z" fill="" data-original="" style=""></path></g></g></svg>
+												</span>
+											</div>
+											<div class="box-title-wrap">
+												<h3 class="box-title">
+													Free Shipping
+												</h3>
+												<p class="box-description">
+													You will love at great low prices
+												</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4 sm-m-b-50">
+										<div class="box">
+											<div class="box-icon">
+												<span>
+													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="svg-icon2 plant" x="0" y="0" viewBox="0 0 513.063 513.063" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><g xmlns="http://www.w3.org/2000/svg" id="XMLID_779_"><g id="XMLID_484_"><path id="XMLID_581_" d="m418.532 205.063h-191.127c8.838-10.159 14.208-23.411 14.208-37.902 0-31.889-25.943-57.832-57.832-57.832s-57.832 25.943-57.832 57.832c0 14.491 5.37 27.743 14.207 37.902h-45.624c-27.57 0-50 22.43-50 50v58.999c0 5.523 4.477 10 10 10s10-4.477 10-10v-58.999c0-16.542 13.458-30 30-30h280c16.542 0 30 13.458 30 30v54h-104c-27.57 0-50 22.43-50 50s22.43 50 50 50h104v54c0 16.542-13.458 30-30 30h-280c-16.542 0-30-13.458-30-30v-59.078c0-5.523-4.477-10-10-10s-10 4.477-10 10v59.078c0 27.57 22.43 50 50 50h324c27.57 0 50-22.43 50-50v-208c0-27.57-22.43-50-50-50zm-234.751-75.733c20.861 0 37.832 16.971 37.832 37.832s-16.971 37.832-37.832 37.832c-20.86 0-37.832-16.971-37.832-37.832s16.971-37.832 37.832-37.832zm230.724 95.733h4.027c16.542 0 30 13.458 30 30v54h-24v-54c0-11.247-3.735-21.637-10.027-30zm-143.973 134c0-16.542 13.458-30 30-30h148v60h-148c-16.542 0-30-13.458-30-30zm148 134h-4.027c6.292-8.363 10.027-18.752 10.027-30v-54h24v54c0 16.542-13.458 30-30 30z" fill="" data-original="" style=""></path><path id="XMLID_1260_" d="m297.972 349.062c-2.64 0-5.22 1.07-7.08 2.93s-2.92 4.44-2.92 7.07 1.06 5.21 2.92 7.07c1.87 1.86 4.44 2.93 7.08 2.93 2.63 0 5.2-1.07 7.07-2.93 1.86-1.86 2.93-4.44 2.93-7.07s-1.07-5.21-2.93-7.07c-1.86-1.861-4.44-2.93-7.07-2.93z" fill="" data-original="" style=""></path><path id="XMLID_1711_" d="m329.283 137.66c31.889 0 57.832-25.943 57.832-57.832 0-31.888-25.943-57.832-57.832-57.832s-57.832 25.943-57.832 57.832 25.943 57.832 57.832 57.832zm0-95.663c20.86 0 37.832 16.971 37.832 37.832s-16.971 37.832-37.832 37.832-37.832-16.971-37.832-37.832 16.971-37.832 37.832-37.832z" fill="" data-original="" style=""></path><path id="XMLID_1712_" d="m231.613 98.581c5.523 0 10-4.477 10-10v-78.581c0-5.523-4.477-10-10-10s-10 4.477-10 10v78.581c0 5.523 4.477 10 10 10z" fill="" data-original="" style=""></path><path id="XMLID_1757_" d="m183.613 64c5.523 0 10-4.477 10-10v-44c0-5.523-4.477-10-10-10s-10 4.477-10 10v44c0 5.523 4.477 10 10 10z" fill="" data-original="" style=""></path><path id="XMLID_1760_" d="m54.532 369.062c2.63 0 5.21-1.07 7.07-2.93s2.93-4.44 2.93-7.07-1.07-5.21-2.93-7.07-4.43-2.93-7.07-2.93c-2.63 0-5.21 1.07-7.07 2.93s-2.93 4.44-2.93 7.07 1.07 5.21 2.93 7.07 4.439 2.93 7.07 2.93z" fill="" data-original="" style=""></path></g></g></g></svg>
+												</span>
+											</div>
+											<div class="box-title-wrap">
+												<h3 class="box-title">
+													Flexible Payment
+												</h3>
+												<p class="box-description">
+													Pay with Multiple Credit Cards
+												</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="box">
+											<div class="box-icon">
+												<span>
+													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="svg-icon2 plant" x="0" y="0" viewBox="0 0 512.001 512.001" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><g xmlns="http://www.w3.org/2000/svg"><g><path d="M384.834,180.699c-0.698,0-348.733,0-348.733,0l73.326-82.187c4.755-5.33,4.289-13.505-1.041-18.26    c-5.328-4.754-13.505-4.29-18.26,1.041l-82.582,92.56c-10.059,11.278-10.058,28.282,0.001,39.557l82.582,92.561    c2.556,2.865,6.097,4.323,9.654,4.323c3.064,0,6.139-1.083,8.606-3.282c5.33-4.755,5.795-12.93,1.041-18.26l-73.326-82.188    c0,0,348.034,0,348.733,0c55.858,0,101.3,45.444,101.3,101.3s-45.443,101.3-101.3,101.3h-61.58    c-7.143,0-12.933,5.791-12.933,12.933c0,7.142,5.79,12.933,12.933,12.933h61.58c70.12,0,127.166-57.046,127.166-127.166    C512,237.745,454.954,180.699,384.834,180.699z" fill="" data-original="" style=""></path></g></g></g></svg>
+												</span>
+											</div>
+											<div class="box-title-wrap">
+												<h3 class="box-title">
+													14 Day Returns
+												</h3>
+												<p class="box-description">
+													Within 30 days for an exchange.
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div><!-- #content -->
+		</div><!-- #primary -->
+	</div><!-- #main-content -->
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+	document.addEventListener("DOMContentLoaded", () => {
+		document.querySelectorAll(".add-to-wishlist").forEach(button => {
+			button.addEventListener("click", async () => {
+				const productId = button.dataset.productId;
+
+				try {
+					const response = await fetch("/Wishlist/AddToWishlist", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/x-www-form-urlencoded"
+						},
+						body: `productId=${productId}`
+					});
+
+					if (!response.ok) throw new Error("Server error");
+
+					const data = await response.json();
+
+					Swal.fire({
+						icon: data.success ? "success" : "warning",
+						title: data.success ? "Success" : "Note",
+						text: data.message,
+						timer: 2000,
+						showConfirmButton: false
+					});
+
+				} catch (err) {
+					Swal.fire({
+						icon: "error",
+						title: "Error",
+						text: "Something went wrong!",
+						timer: 2000,
+						showConfirmButton: false
+					});
+				}
+			});
+		});
+	});
+</script>
+
+<script>
+
+	$(".product-btn").click(function() {
+		let productId = $(this).data("product-id");
+		let categoryId = $(this).closest(".btn-compare").attr("data-category-id");
+
+		console.log("Clicked Product ID:", productId);
+		console.log("Category ID:", categoryId);
+
+		if (!categoryId || categoryId === "undefined" || categoryId === "0") {
+			return;
+		}
+
+		window.location.href = `/ComparisonProducts/GetComparisonProducts?categoryId=${categoryId}&selectedProduct=${productId}`;
+	});
+
+</script>
+
+<script>
+	$(document).ready(function () {
+		$('#subscribeForm').submit(function (e) {
+			e.preventDefault(); 
+
+			const email = $('input[name="email"]').val();
+			const token = $('input[name="__RequestVerificationToken"]').val();
+
+			$.ajax({
+				type: 'POST',
+				url: '/Home/SubscribeAjax',
+				data: {
+					__RequestVerificationToken: token,
+					email: email
+				},
+				success: function (res) {
+					if (res.success) {
+						$('#subscribe-message').html(
+							`<div class="alert alert-success">${res.message}</div>`
+						);
+						$('input[name="email"]').val('');
+					} else {
+						$('#subscribe-message').html(
+							`<div class="alert alert-danger">${res.message}</div>`
+						);
+					}
+				},
+				error: function () {
+					$('#subscribe-message').html(
+						`<div class="alert alert-danger">Unexpected error occurred.</div>`
+					);
+				}
+			});
+		});
+	});
+</script>
+
+<style>
+	.subscribe-button {
+		background-color: white;
+		color: black;
+		border: 2px solid black;
+		padding: 8px 16px;
+		cursor: pointer;
+		transition: 0.3s ease;
+		margin-left: 13pc;
+		margin-top: 1pc;
+	}
+
+		.subscribe-button:hover {
+			background-color: black;
+			color: white;
+		}
+</style>

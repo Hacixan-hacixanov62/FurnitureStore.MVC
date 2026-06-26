@@ -1,0 +1,205 @@
+﻿@model MyAccountVM
+
+<div id="site-main" class="site-main">
+	<div id="main-content" class="main-content">
+		<div id="primary" class="content-area">
+			<div id="title" class="page-title" style="background-image: url(./assets/img/@Model.Setting.FirstOrDefault(x => x.Key == "MyAccountBanner")?.Value);">
+				<div class="section-container">
+					<div class="content-title-heading">
+						<h1 class="text-title-heading">
+							My Account
+						</h1>
+					</div>
+					<div class="breadcrumbs">
+						<a href="index.html">Home</a><span class="delimiter"></span>My Account
+					</div>
+				</div>
+			</div>
+
+			<div id="content" class="site-content" role="main">
+				<div class="section-padding">
+					<div class="section-container p-l-r">
+						<div class="page-my-account">
+							<div class="my-account-wrap clearfix">
+								<nav class="my-account-navigation">
+									<ul class="nav nav-tabs">
+										<li class="nav-item">
+											<a class="nav-link active" data-toggle="tab" href="#dashboard" role="tab">Dashboard</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" data-toggle="tab" href="#orders" role="tab">Orders</a>
+										</li>
+										
+										<li class="nav-item">
+											<a class="nav-link" data-toggle="tab" href="#account-details" role="tab">Edit Account</a>
+										</li>
+										<li class="nav-item">
+											<form asp-controller="Account" asp-action="LogOut" method="post" style="display:inline;">
+													<button type="submit" title="Log Out" style="font-weight: 500;">
+                                                      Logout  </button>
+											</form>
+										</li>		
+									</ul>
+								</nav>
+								<div class="my-account-content tab-content">
+									<div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+										<div class="my-account-dashboard">
+											<p>
+												Hello <strong>Rosie</strong> (not <strong>Rosie</strong>? <a asp-controller="Account" asp-action="Register">Register</a>)
+											</p>
+											<p>
+												From your account dashboard you can view your <span style="font-weight: bold">recent orders</span>, manage your <span style="font-weight: bold">edit your password and account details</span>.
+											</p>
+										</div>
+									</div>
+							
+									
+									<div class="tab-pane fade" id="orders" role="tabpanel">
+										<div class="my-account-orders">
+											<div class="table-responsive">
+												 <table class="table"> 
+											    	<thead> 
+												 		<tr> 
+															<th>#</th>
+															<th>Order Date</th>
+															<th>Total Price</th>
+															<th>Status</th>
+															<th>Items</th>
+												 		</tr> 
+												 	</thead> 
+												 	<tbody> 
+														@for (int i = 0; i < Model.Orders.Count; i++)
+														{
+															<tr>
+																<td>@(i + 1)</td>
+																<td>@Model.Orders[i].CreatedDate.ToString("dd/MM/yyyy")</td>
+																<td>$@Model.Orders[i].TotalPrice</td>
+																<td>@Model.Orders[i].Status</td>
+																<td style="font-size: 13px;">
+																	<ul>
+																		@foreach (var item in Model.Orders[i].Items)
+																		{
+																			<li>
+																				<strong>@item.ProductName</strong> -
+																				Color: @item.ColorName -
+																				Qty: @item.Quantity -
+																				Price: $@item.Price
+																			</li>
+																		}
+																	</ul>
+																</td>
+															</tr>
+											         	}
+												 	</tbody> 
+												 </table>											
+											</div>
+										</div>
+									</div>
+
+
+									<div class="tab-pane fade" id="account-details" role="tabpanel">
+										<div class="my-account-account-details">	
+											<form id="emailForm" asp-action="ChangeEmail" asp-controller="MyAccount" method="post">
+												@Html.AntiForgeryToken()
+												<fieldset>
+													<legend>Change Email</legend>
+													<input name="NewEmail" value="@Model.UpdateEmail.CurrentEmail" class="form-control" autocomplete="off" />
+													<p class="form-row">
+													<button type="submit" class="button btn btn-primary">Save</button>
+													</p>
+												</fieldset>
+											</form>
+
+											<div id="emailResult"></div>
+
+											<hr />
+
+											
+											<form id="usernameForm" asp-action="ChangeUsername" asp-controller="MyAccount" method="post">
+												@Html.AntiForgeryToken()
+												<fieldset>
+													<legend>Change Username</legend>
+													<input name="NewUsername" value="@Model.UpdateUsername.CurrentUsername" class="form-control" autocomplete="off" />
+													<p class="form-row">
+													<button type="submit" class="button btn btn-primary">Save</button>
+													</p>
+												</fieldset>
+											</form>
+
+											<div id="usernameResult"></div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div><!-- #content -->
+		</div><!-- #primary -->
+	</div><!-- #main-content -->
+</div>
+
+@section Scripts {
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(function () {
+			$("#usernameForm").submit(function (e) {
+				e.preventDefault();
+
+				let form = $(this);
+				let data = form.serialize();
+
+				$.ajax({
+					type: "POST",
+					url: form.attr("action"),
+					data: data,
+					success: function (res) {
+						$("#usernameResult").html(`<div class="alert alert-success">${res.message}</div>`);
+
+						if (res.redirectToLogin) {
+							setTimeout(() => {
+								window.location.href = "/Account/Login";
+							}, 2000);
+						}
+					},
+					error: function (xhr) {
+						const msg = xhr.responseJSON?.message ?? "An error occurred.";
+						$("#usernameResult").html(`<div class="alert alert-danger">${msg}</div>`);
+					}
+				});
+			});
+		});
+	</script>
+
+	<script>
+		$(function () {
+			$("#emailForm").submit(function (e) {
+				e.preventDefault();
+
+				let form = $(this);
+				let data = form.serialize();
+
+				$.ajax({
+					type: "POST",
+					url: form.attr("action"),
+					data: data,
+					success: function (res) {
+						$("#emailResult").html(`<div class="alert alert-success">${res.message}</div>`);
+
+						if (res.redirectToLogin) {
+							setTimeout(() => {
+								window.location.href = "/Account/Login";
+							}, 2000);
+						}
+					},
+					error: function (xhr) {
+						const msg = xhr.responseJSON?.message ?? "An error occurred.";
+						$("#emailResult").html(`<div class="alert alert-danger">${msg}</div>`);
+					}
+				});
+			});
+		});
+	</script>
+
+}

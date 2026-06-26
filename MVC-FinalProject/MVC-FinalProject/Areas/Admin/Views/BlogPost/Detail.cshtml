@@ -1,0 +1,44 @@
+﻿@model BlogPost
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="container mt-5 d-flex justify-content-center">
+            <div class="card shadow-lg rounded-4" style="width: 600px; border: none;">
+                <div class="card-body">
+
+                    <div class="mb-3">
+                        <span class="fw-semibold text-secondary">🖼 Images:</span>
+                        <div class="d-flex flex-wrap">
+                            @foreach (var image in Model.Images)
+                            {
+                                <img src="@image.Image" alt="Blog Image" width="100" height="100" />
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <span class="fw-semibold text-secondary">📝 Description:</span>
+                        <span class="text-muted mt-1">@Model.Description</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <span class="fw-semibold text-secondary">✨ Highlight Text:</span>
+                        <span class="text-muted mt-1">@Model.HighlightText</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <span class="fw-semibold text-secondary">📌 Title:</span>
+                        <span class="text-muted mt-1">@Model.Title</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <span class="fw-semibold text-secondary">📂 Category:</span>
+                        <span class="text-muted mt-1">@ViewBag.BlogCategory</span>
+                    </div>
+
+                    <a asp-action="Index" class="btn btn-outline-primary mt-3" style="margin-bottom: 1pc;">← Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

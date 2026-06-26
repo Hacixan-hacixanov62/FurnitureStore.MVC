@@ -1,0 +1,396 @@
+﻿﻿
+@model BasketVM
+
+<div id="site-main" class="site-main">
+    <div id="main-content" class="main-content">
+        <div id="primary" class="content-area">
+            <div id="title" class="page-title" style="background-image: url(./assets/img/@Model.Setting.FirstOrDefault(x => x.Key == "BlogBanner")?.Value); margin-top: -2pc;">
+                <div class="section-container">
+                    <div class="content-title-heading">
+                        <h1 class="text-title-heading">
+                            Shopping Cart
+                        </h1>
+                    </div>
+                    <div class="breadcrumbs">
+                        <a asp-controller="Home" asp-action="Index">Home</a><span class="delimiter"></span><a asp-controller="Shop" asp-action="Index">Shop</a><span class="delimiter"></span>Shopping Cart
+                    </div>
+                </div>
+            </div>
+
+            <div id="content" class="site-content" role="main">
+                <div class="section-padding">
+                    <div class="section-container p-l-r">
+                        <div class="shop-cart">
+                            <div class="row">
+                                <div class="col-xl-8 col-lg-12 col-md-12 col-12">
+
+                                    @if (Model.Basket.BasketProducts == null || !Model.Basket.BasketProducts.Any())
+                                    {
+                                        <div class="shop-cart-empty">
+                                            <div class="notices-wrapper">
+                                                <p class="cart-empty">Your cart is currently empty.</p>
+                                            </div>
+                                            <div class="return-to-shop">
+                                                <a class="button" asp-controller="Shop" asp-action="Index">
+                                                    Return to shop
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {                                    
+                                        <form id="cart-form" class="cart-form" method="post" asp-action="UpdateCart" asp-controller="Basket">
+                                            <div class="table-responsive">
+                                                <table class="cart-items table" cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="product-thumbnail">Product</th>
+                                                            <th class="product-price">Price</th>
+                                                            <th class="product-quantity">Quantity</th>
+                                                            <th class="product-subtotal">Subtotal</th>
+                                                            <th class="product-remove">&nbsp;</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @for (int i = 0; i < Model.Basket.BasketProducts.Count; i++)
+                                                        {
+                                                            var item = Model.Basket.BasketProducts[i];
+                                                            <tr class="cart-item" data-index="@i" data-productid="@item.ProductId" data-colorid="@item.ColorId" data-price="@item.Price">
+                                                                <td class="product-thumbnail">
+                                                                    <a asp-controller="ProductDetail" asp-action="Detail" asp-route-id="@item.ProductId">
+                                                                        <img width="600" height="600" src="@item.ProductImage" class="product-image" />
+                                                                    </a>
+                                                                    <div class="product-name">
+                                                                        <a asp-controller="ProductDetail" asp-action="Detail" asp-route-id="@item.ProductId">@item.ProductName</a>
+                                                                        <br />
+                                                                        <small>Color: @item.ColorName</small>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="product-price">
+                                                                    <span class="price">@item.Price</span>
+                                                                </td>
+                                                                <td>
+                                                                    <div style="display: flex; align-items: center; gap: 5px;">
+                                                                        <input type="hidden" name="items[@i].ProductId" value="@item.ProductId" />
+                                                                        <input type="hidden" name="items[@i].ColorId" value="@item.ColorId" />
+                                                                        <input type="hidden" name="items[@i].OldQuantity" value="@item.Quantity" />
+
+                                                                        <button type="button" class="minus" style="width: 30px; height: 30px; border: 1px solid #ccc; background: #f5f5f5; cursor: pointer;">-</button>
+                                                                        <input type="number" class="qty" name="items[@i].NewQuantity" value="@item.Quantity" min="1"
+                                                                               style="width: 60px; height: 30px; text-align: center; border: 1px solid #ccc; margin: 0;" />
+                                                                        <button type="button" class="plus" style="width: 30px; height: 30px; border: 1px solid #ccc; background: #f5f5f5; cursor: pointer;">+</button>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="product-subtotal">
+                                                                    <span>@(item.Price * item.Quantity)</span>
+                                                                </td>
+
+                                                                <td>
+                                                                    <button type="button" class="remove btn btn-link" data-productid="@item.ProductId" title="Remove item">
+                                                                        <i class="fa-solid fa-trash" style="color: #db1414;"></i>
+                                                                    </button>
+                                                                </td>
+                                                       
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+
+                                                       <tfoot>
+                                                        <tr>
+                                                            <td colspan="6" class="actions">
+                                                                <div class="bottom-cart">
+                                                                    <div class="coupon">
+                                                                        <input type="text" name="coupon_code" class="input-text" id="coupon-code" placeholder="Coupon code" />
+                                                                        <button type="button" id="apply-coupon" class="button">Apply coupon</button>
+                                                                    </div>
+                                                                    <h2><a asp-controller="Shop" asp-action="Index">Continue Shopping</a></h2>
+                                                                    <button type="button" id="update-cart" class="button">Update cart</button>
+                                                                </div>
+                                                                <div id="coupon-message" style="color:red;"></div>
+                                                            </td>
+                                                        </tr>
+                                                    </tfoot>
+
+                                                </table>
+                                            </div>
+                                        </form>
+
+                                                                       
+                                        
+                                        }
+                                </div>
+
+                                @if (Model.Basket.BasketProducts != null && Model.Basket.BasketProducts.Any())
+                                {
+                                    <div class="col-xl-4 col-lg-12 col-md-12 col-12">
+                                        <div class="cart-totals">
+                                            <h2>Cart totals</h2>
+                                            <div>
+                                                <div class="order-total">
+                                                    <div class="title">Total</div>
+                                                    <div class="size-209">
+                                                        <span id="cart-total" class="mtext-110 cl2">@Model.Basket.TotalPrice</span>
+                                                   </div>
+                                                </div>
+
+                                                <div class="order-total">
+                                                    <div class="title">Discount</div>
+                                                    <div><span id="discount-amount">0%</span></div>
+                                                </div>
+
+                                                <div class="order-total">
+                                                    <div class="title">Final</div>
+                                                    <div><span id="final-total">@Model.Basket.TotalPrice</span></div>
+                                                </div>
+
+                                                <span id="coupon-message" style="color: red; display:block; margin-top: 10px;"></span>
+
+                                            </div>
+                                            <div class="proceed-to-checkout">
+
+                                                <a id="proceedToCheckout" class="checkout-button button flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer">
+                                                    Proceed to Checkout
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- #content -->
+        </div><!-- #primary -->
+    </div><!-- #main-content -->
+</div>
+
+
+
+<script>
+    document.getElementById('proceedToCheckout').addEventListener('click', function () {
+        var totalPrice = document.querySelector('div.size-209 > span.mtext-110').textContent.replace('$', '').trim();
+
+        fetch('/Checkout/Checkout', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ totalPrice: parseFloat(totalPrice) })
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Something wrong');
+                }
+            })
+            .then(data => {
+                console.error('Xəta baş verdi:', totalPrice);
+                alert('Xəta baş verdi: ' + totalPrice);
+            })
+            .catch(error => {
+                window.location.href = `/Checkout/Checkout?data=${totalPrice}`;
+            });
+    });    
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        // function updateCartTotals() {
+        //     let subtotal = 0;
+
+        //     $(".cart-item").each(function () {
+        //         let price = parseFloat($(this).data("price"));
+        //         let quantity = parseInt($(this).find(".qty").val());
+
+        //         if (!isNaN(price) && !isNaN(quantity)) {
+        //             subtotal += price * quantity;
+        //         }
+        //     });
+
+        //     $("#cart-subtotal").text(subtotal.toFixed(2));
+        //     $("#cart-total").text(subtotal.toFixed(2));
+
+        //     if ($(".cart-item").length === 0) {
+        //         $(".cart-totals").remove();
+        //         $(".proceed-to-checkout").remove(); 
+        //     }
+        // }
+
+        $(document).on("click", ".remove", function () {
+            var button = $(this);
+            var productId = button.data("productid");
+
+            console.log("Sil düyməsi klikləndi. ID:", productId);
+
+            $.ajax({
+                url: '@Url.Action("DeleteProduct", "Basket")',
+                type: 'POST',
+                data: { productId: productId },
+                success: function () {
+                    button.closest("tr.cart-item").remove();
+
+                    updateCartTotals();
+                },
+                error: function (xhr) {
+                    alert("Xəta baş verdi. Kod: " + xhr.status);
+                }
+            });
+        });
+
+
+            function updateCartTotals() {
+        let subtotal = 0;
+
+        $(".cart-item").each(function () {
+            let price = parseFloat($(this).data("price"));
+            let quantity = parseInt($(this).find(".qty").val());
+
+            if (!isNaN(price) && !isNaN(quantity)) {
+                subtotal += price * quantity;
+            }
+        });
+
+        $("#cart-subtotal").text(subtotal.toFixed(2));
+        $("#cart-total").text(subtotal.toFixed(2));
+
+        let discountText = $("#discount-amount").text().replace("%", "").trim();
+        let discount = parseFloat(discountText);
+        if (isNaN(discount) || discount === 0) {
+            $("#final-total").text(subtotal.toFixed(2));
+        } else {
+            let finalTotal = subtotal - (subtotal * (discount / 100));
+            $("#final-total").text(finalTotal.toFixed(2));
+        }
+
+        if ($(".cart-item").length === 0) {
+            $(".cart-totals").remove();
+            $(".proceed-to-checkout").remove();
+        }
+    }
+
+</script>
+
+
+
+
+   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.plus').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const input = e.target.previousElementSibling;
+          input.value = parseInt(input.value) + 1;
+        });
+      });
+
+      document.querySelectorAll('.minus').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const input = e.target.nextElementSibling;
+          let val = parseInt(input.value);
+          if (val > 1) input.value = val - 1;
+        });
+      });
+
+      document.getElementById('update-cart').addEventListener('click', async () => {
+        const formData = new FormData();
+
+        document.querySelectorAll('tr.cart-item').forEach((tr, i) => {
+          const productId = tr.querySelector('input[name^="items"][name$=".ProductId"]').value;
+          const colorId = tr.querySelector('input[name^="items"][name$=".ColorId"]').value;
+          const oldQuantity = tr.querySelector('input[name^="items"][name$=".OldQuantity"]').value;
+          const newQuantity = tr.querySelector('input[name^="items"][name$=".NewQuantity"]').value;
+
+          formData.append(`items[${i}].ProductId`, productId);
+          formData.append(`items[${i}].ColorId`, colorId);
+          formData.append(`items[${i}].OldQuantity`, oldQuantity);
+          formData.append(`items[${i}].NewQuantity`, newQuantity);
+        });
+
+        try {
+          const response = await fetch('@Url.Action("UpdateCart", "Basket")', {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          });
+
+          if (!response.ok) throw new Error('Server error');
+
+          const data = await response.json();
+          data.updatedItems.forEach(item => {
+            const tr = document.querySelector(`tr.cart-item[data-productid="${item.productId}"][data-colorid="${item.colorId}"]`);
+            if (tr) {
+              tr.querySelector('input[name$=".NewQuantity"]').value = item.quantity;
+              tr.querySelector('input[name$=".OldQuantity"]').value = item.quantity;
+              tr.querySelector('.product-subtotal span').textContent = (item.price * item.quantity).toFixed(2);
+            }
+          });
+
+          const subtotalEl = document.getElementById('cart-subtotal');
+          if (subtotalEl) subtotalEl.textContent = data.cartTotal.toFixed(2);
+
+          const totalEl = document.getElementById('cart-total');
+          if (totalEl) totalEl.textContent = data.cartTotal.toFixed(2);
+
+              updateCartTotals(); // ✅ BURADA
+        } catch (error) {
+          alert('Cart update failed: ' + error.message);
+        }
+      });
+    });
+</script>
+
+
+@section Scripts {
+    <script>
+               document.getElementById("apply-coupon").addEventListener("click", async function () {
+            const code = document.getElementById("coupon-code").value.trim();
+            const message = document.getElementById("coupon-message");
+
+            if (!code) {
+                message.innerText = "Required.";
+                return;
+            }
+
+            try {
+                const res = await fetch(`/PromoCode/Get?code=${code}`);
+                if (!res.ok) {
+                    message.innerText = "Promo code not found or cannot be used.";
+                    return;
+                }
+
+                const promo = await res.json();
+
+                if (!promo.isActive || (promo.usageLimit > 0 && promo.usageCount >= promo.usageLimit)) {
+                    message.innerText = "This promo code is no longer valid.";
+                    return;
+                }
+
+                const useResponse = await fetch(`/PromoCode/UsePromoCode?code=${code}`, {
+                    method: "POST"
+                });
+
+                if (!useResponse.ok) {
+                    message.innerText = "The promo code could not be used.";
+                    return;
+                }
+
+                let discountPercent = promo.discountPercent;
+                let totalText = document.getElementById("cart-total").innerText.replace('$', '');
+                let total = parseFloat(totalText);
+                let discountAmount = (total * discountPercent) / 100;
+                let finalTotal = total - discountAmount;
+
+                document.getElementById("discount-amount").innerText = `${discountPercent}%`;
+                document.getElementById("final-total").innerText = `$${finalTotal.toFixed(2)}`;
+                message.style.color = "green";
+                message.innerText = "Discount applied !";
+            } catch (err) {
+                message.innerText = "Something wrong";
+                console.error(err);
+            }
+        });
+
+    </script>
+}

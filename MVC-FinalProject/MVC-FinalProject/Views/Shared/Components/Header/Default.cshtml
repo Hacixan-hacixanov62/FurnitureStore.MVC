@@ -1,0 +1,510 @@
+﻿@model HeaderVMVC
+
+<header id="site-header" class="site-header header-v3">
+    <div class="header-mobile">
+        <div class="section-padding">
+            <div class="section-container large">
+                <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3 header-left">
+                        <div class="navbar-header">
+                            <button type="button" id="show-megamenu"
+                                    class="navbar-toggle"></button>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-6 header-center">
+                        <div class="site-logo">
+                            <a asp-controller="Home" asp-action="Index">
+                                <img width="400"
+                                   height="79" src="~/assets/img/@Model.Setting.FirstOrDefault(x => x.Key == "Logo")?.Value" alt="Ruper – Furniture HTML Theme" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3 header-right">
+                        <div class="ruper-topcart dropdown">
+                            <div class="dropdown mini-cart top-cart">
+                                <div class="remove-cart-shadow"></div> <a class="dropdown-toggle cart-icon" href="#"
+                                                                          role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <div class="icons-cart">
+                                        <i class="icon-large-paper-bag"></i>
+                                        @await Component.InvokeAsync("BasketCount")
+                                    </div>
+                                </a>
+                                <div class="dropdown-menu cart-popup">
+                                    <div class="cart-empty-wrap">
+                                        <ul class="cart-list">
+                                            <li class="empty">
+                                                <span>No products in the cart.</span> <a class="go-shop"
+                                                                                       asp-controller="Shop" asp-action="Index">
+                                                    GO TO SHOP<i aria-hidden="true"
+                                                                 class="arrow_right"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="cart-list-wrap">
+                                        <ul class="cart-list ">
+                                            <li class="mini-cart-item">
+                                                <a href="#" class="remove"
+                                                   title="Remove this item"><i class="icon_close"></i></a> <a href="shop-details.html" class="product-image">
+                                                    <img width="600"
+                                                         height="600" src="media/product/3.jpg" alt="">
+                                                </a> <a href="shop-details.html" class="product-name">
+                                                    Chair Oak Matt
+                                                    Lacquered
+                                                </a>
+                                                <div class="quantity">Qty: 1</div>
+                                                <div class="price">$150.00</div>
+                                            </li>
+                                            <li class="mini-cart-item">
+                                                <a href="#" class="remove"
+                                                   title="Remove this item"><i class="icon_close"></i></a> <a href="shop-details.html" class="product-image">
+                                                    <img width="600"
+                                                         height="600" src="media/product/1.jpg" alt="">
+                                                </a> <a href="shop-details.html" class="product-name">Zunkel Schwarz</a>
+                                                <div class="quantity">Qty: 1</div>
+                                                <div class="price">$100.00</div>
+                                            </li>
+                                        </ul>
+                                        <div class="total-cart">
+                                            <div class="title-total">Total: </div>
+                                            <div class="total-price"><span>$100.00</span></div>
+                                        </div>
+                                        <div class="free-ship">
+                                            <div class="title-ship">
+                                                Buy <strong>$400</strong> more to enjoy <strong>
+                                                    FREE
+                                                    Shipping
+                                                </strong>
+                                            </div>
+                                            <div class="total-percent">
+                                                <div class="percent" style="width:20%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="buttons">
+                                            <a href="shop-cart.html"
+                                               class="button btn view-cart btn-primary">View cart</a> <a href="shop-checkout.html" class="button btn checkout btn-default">
+                                                Check
+                                                out
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="header-mobile-fixed">
+            <!-- Shop -->
+            <div class="shop-page"> <a href="shop-grid-left.html"><i class="wpb-icon-shop"></i></a> </div>
+            <!-- Login -->
+            <div class="my-account">
+                <div class="login-header"> <a href="page-my-account.html"><i class="wpb-icon-user"></i></a> </div>
+            </div> <!-- Search -->
+            <div class="search-box">
+                <div class="search-toggle"><i class="wpb-icon-magnifying-glass"></i></div>
+            </div> <!-- Wishlist -->
+            <div class="wishlist-box"> <a href="shop-wishlist.html"><i class="wpb-icon-heart"></i></a> </div>
+        </div>
+    </div>
+    <div class="header-desktop">
+        <div class="header-wrapper">
+            <div class="section-padding">
+                <div class="section-container large">
+                    <div class="row">
+                        <div class="col-lg-8 header-left">
+                            <div class="site-logo" style="margin-bottom: -6pc;">
+                                <a asp-controller="Home" asp-action="Index">
+                                    <img width="400"
+                                         height="79" style="margin-top: -2pc;" src="~/assets/img/@Model.Setting.FirstOrDefault(x => x.Key == "Logo")?.Value" alt="" />
+                                </a>
+                            </div>
+                            <div class="site-navigation">
+                                <nav id="main-navigation">
+                                    <ul id="menu-main-menu" class="menu" style="margin-left:6pc;">
+                                        <li class="level-0 menu-item">
+                                            <a asp-controller="Home" asp-action="Index">
+                                                <span class="menu-item-text">Home</span>
+                                            </a>
+                                        </li>
+                                        <li class="level-0 menu-item">
+                                            <a asp-controller="Shop" asp-action="Index">
+                                                <span class="menu-item-text">Shop</span>
+                                            </a>
+                                        </li>
+                                        <li class="level-0 menu-item">
+                                            <a asp-controller="Blog" asp-action="Index">
+                                                <span class="menu-item-text">Blog</span>
+                                            </a>
+                                        </li>
+                                        <li class="level-0 menu-item">
+                                            <a asp-controller="About"
+                                               asp-action="Index"><span class="menu-item-text">About</span></a>
+                                        </li>
+                                        <li class="level-0 menu-item menu-item-has-children">
+                                            <a href="#">
+                                                <span class="menu-item-text">Pages</span>
+                                            </a>
+                                            <ul class="sub-menu">
+                                                <li>
+                                                    <a asp-controller="Account" asp-action="ForgetPassword">
+                                                        <span class="menu-item-text">Forgot Password</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a asp-controller="MyAccount" asp-action="Index">
+                                                        <span class="menu-item-text">My Account</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a asp-controller="FAQ" asp-action="Index">
+                                                        <span class="menu-item-text">FAQ</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li class="level-0 menu-item">
+                                            <a asp-controller="Contact"
+                                               asp-action="Index"><span class="menu-item-text">Contact</span></a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 header-right">
+                            <div class="header-page-link">
+
+                                @inject IHttpContextAccessor HttpContextAccessor
+
+                                @{
+                                    var isAuthenticated = User.Identity != null && User.Identity.IsAuthenticated;
+                                    var hasToken = HttpContextAccessor.HttpContext?.Session.GetString("AuthToken") != null;
+                                }
+
+                                <div>
+                                    @if (isAuthenticated && hasToken)
+                                    {
+                                        <span>
+                                            Hi, @User.Identity.Name
+                                            <form asp-controller="Account" asp-action="LogOut" method="post" style="display:inline;">
+                                                <button type="submit" class="btn btn-link" title="Log Out">
+                                                    <i class="fa-solid fa-right-from-bracket fa-fade fa-lg" style="color: #ffffff;"></i>
+                                                </button>
+                                            </form>
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Account" asp-action="Login">Login</a>
+                                    }
+                                </div>
+
+
+
+                                <!-- Search -->
+                                <div class="search-box">
+                                    <div class="search-toggle">
+                                        <i class="icon-search"></i>
+                                    </div>
+                                </div> <!-- Wishlist -->
+                                <div class="wishlist-box">
+                                    <a asp-controller="Wishlist" asp-action="Index">
+                                        <i class="icon-heart">
+                                            @await Component.InvokeAsync("WishlistCount")
+                                        </i>
+                                    </a>
+                                </div>
+                                <!-- Cart -->
+                                <div class="ruper-topcart dropdown light">
+                                    <div class="dropdown mini-cart top-cart">
+                                        <div class="remove-cart-shadow"></div> 
+                                        <a class="dropdown-toggle cart-icon"
+                                           href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+                                           aria-expanded="false">
+                                            <div class="icons-cart">
+                                                <i class="icon-large-paper-bag"></i>
+                                                @await Component.InvokeAsync("BasketCount")
+                                            </div>
+                                        </a>
+                                        <div class="dropdown-menu cart-popup">
+                                            <div class="cart-empty-wrap">
+                                                <ul class="cart-list">
+                                                    <li class="empty">
+                                                        <span>No products in the cart.</span> <a class="go-shop" href="shop-grid-left.html">
+                                                            GO TO SHOP<i aria-hidden="true" class="arrow_right"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <div class="cart-list-wrap">
+                                                <ul class="cart-list ">
+                                                    @foreach (var item in Model.LastTwoBasketItems)
+                                                    {
+                                                        <li class="mini-cart-item">
+                                                            <a href="#" class="remove"
+                                                               title="Remove this item"><i class="icon_close"></i></a> <a href="shop-details.html" class="product-image">
+                                                                <img width="600" height="600" src="@item.ImageUrl"
+                                                                     alt="">
+                                                            </a> <a href="shop-details.html"
+                                                                    class="product-name">@item.ProductName</a>
+                                                            <div class="quantity">Qty: 1</div>
+                                                            <div class="price">$@item.Price</div>
+                                                        </li>
+                                                    }                                               
+                                                </ul>
+                                               
+                                                <div class="free-ship">
+                                                    <div class="title-ship">
+                                                        Buy <strong>$400</strong> more to enjoy
+                                                        <strong>FREE Shipping</strong>
+                                                    </div>
+                                                    <div class="total-percent">
+                                                        <div class="percent" style="width:20%"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="buttons">
+                                                    <a asp-controller="Basket" asp-action="Index" style="width: 338px; height: 45px;"
+                                                       class="button btn view-cart btn-primary">View cart</a>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<style>
+    /* Search Overlay Product Results Styling */
+    .content-menu_search {
+        max-height: 70vh;
+        overflow-y: auto;
+        padding: 5px 0;
+        margin-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+        .content-menu_search label {
+            display: block;
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 15px;
+            font-weight: 500;
+            padding-left: 10px;
+        }
+
+        .content-menu_search .menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+            .content-menu_search .menu li {
+                margin-bottom: 12px;
+                transition: transform 0.2s ease;
+            }
+
+                .content-menu_search .menu li:last-child {
+                    margin-bottom: 0;
+                }
+
+                .content-menu_search .menu li a {
+                    display: flex;
+                    text-decoration: none;
+                    color: #333;
+                    padding: 12px 15px;
+                    border-radius: 8px;
+                    background-color: #fff;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                    transition: all 0.3s ease;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                    .content-menu_search .menu li a:hover {
+                        background-color: #f9f7f4;
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                    }
+
+                    .content-menu_search .menu li a::before {
+                        content: "";
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        height: 100%;
+                        width: 4px;
+                        background-color: #9b7b55;
+                        opacity: 0;
+                        transition: opacity 0.3s ease;
+                    }
+
+                    .content-menu_search .menu li a:hover::before {
+                        opacity: 1;
+                    }
+
+        .content-menu_search .product-image {
+            width: 60px;
+            height: 60px;
+            background-color: #f5f5f5;
+            border-radius: 6px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+            .content-menu_search .product-image img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: cover;
+            }
+
+            .content-menu_search .product-image .placeholder-icon {
+                color: #ccc;
+                font-size: 24px;
+            }
+
+        .content-menu_search .product-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .content-menu_search .product-name {
+            font-weight: 500;
+            font-size: 15px;
+            margin-bottom: 4px;
+            color: #333;
+            line-height: 1.3;
+        }
+
+        .content-menu_search .product-meta {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 4px;
+        }
+
+        .content-menu_search .product-price {
+            font-weight: 600;
+            color: #9b7b55;
+            font-size: 15px;
+        }
+
+        /* Empty state styling */
+        .content-menu_search .empty-results {
+            padding: 30px 15px;
+            text-align: center;
+            color: #999;
+        }
+
+            .content-menu_search .empty-results i {
+                font-size: 32px;
+                margin-bottom: 10px;
+                display: block;
+                opacity: 0.5;
+            }
+
+        /* Scrollbar styling */
+        .content-menu_search::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .content-menu_search::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .content-menu_search::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+
+            .content-menu_search::-webkit-scrollbar-thumb:hover {
+                background: #9b7b55;
+            }
+
+   
+
+    .content-menu_search .product-name {
+        font-size: 14px;
+    }
+
+    .content-menu_search .product-meta {
+        font-size: 12px;
+    }
+
+    .content-menu_search .product-price {
+        font-size: 14px;
+    }
+
+    }
+</style>
+
+
+
+
+
+<div class="search-overlay">
+    <div class="close-search">×</div>
+    <div class="wrapper-search">
+        <form id="searchForm" method="get" class="search-from">
+            <div class="search-box">
+                <button class="btn" type="submit">
+                    <i class="icon-search"></i>
+                </button>
+                <input id="myInput" type="text" autocomplete="off"
+                       name="searchQuery"
+                       class="input-search s"
+                       placeholder="Search...">
+                <div class="search-top">
+                    <div class="close-search">Cancel</div>
+                </div>
+
+                <div class="content-menu_search">
+                    @if (Model.SearchProducts != null && Model.SearchProducts.Any())
+                    {
+                        <label>Search Results</label>
+                        <ul class="menu">
+                            @foreach (var item in Model.SearchProducts)
+                            {
+                                <li>
+                                    <a href="/product/detail/@item.Id">
+                                      
+                                       
+                                        <div class="product-info">
+                                            <div class="product-name">@item.Name</div>
+                                            <div class="product-meta">@item.BrandName - @item.CategoryName</div>
+                                            <div class="product-price">$@item.Price.ToString("0.00")</div>
+                                        </div>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="empty-results">
+                            <i class="icon-search"></i>
+                            <p>No results found</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script src="https://kit.fontawesome.com/706de796d0.js" crossorigin="anonymous"></script>

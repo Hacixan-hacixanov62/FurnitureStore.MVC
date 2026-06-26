@@ -1,0 +1,85 @@
+﻿@model IEnumerable<AskUsFrom>
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="card-body">
+            <h4 class="card-title" style="font-size: 31px; margin-left: 25pc;">User Messages:</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="color:white"> Name </th>
+                            <th style="color:white"> Email </th>
+                            <th style="color:white"> Message </th>
+                            <th style="color:white"> Created At </th>
+                            <th style="color:white"> Operations </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr id="row-@item.Id">
+                                <td style="color:white"> @item.Name </td>
+                                <td style="color:white"> @item.Email </td>
+                                <td style="color:white; white-space: normal; word-break: break-word; max-width: 400px;"> @item.Message </td>
+                                <td style="color:white"> @item.CreatedDate.ToString("dd/MM/yyyy") </td>
+                                <td style="color:white">
+                                    <button class="btn btn-outline-danger btn-sm delete-message" data-id="@item.Id">Delete</button>
+
+                                    @if (!item.IsApproved)
+                                    {
+                                        <button class="btn btn-outline-success btn-sm approve-btn" data-id="@item.Id">Approve</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // DELETE
+        document.querySelectorAll('.delete-message').forEach(button => {
+            button.addEventListener('click', async function () {
+                const id = this.dataset.id;
+
+                try {
+                    const response = await fetch(`/Admin/AskUsFrom/Delete/${id}`, { method: 'POST' });
+                    if (response.ok) {
+                        document.getElementById(`row-${id}`)?.remove();
+                    } else {
+                        alert("Failed to delete.");
+                    }
+                } catch (error) {
+                    console.error("Delete error:", error);
+                    alert("An error occurred while deleting.");
+                }
+            });
+        });
+
+        // APPROVE
+        document.querySelectorAll('.approve-btn').forEach(button => {
+            button.addEventListener('click', async function () {
+                const id = this.dataset.id;
+
+                try {
+                    const response = await fetch(`/Admin/AskUsFrom/Approve/${id}`, { method: 'POST' });
+                    if (response.ok) {
+                        this.remove();
+                    } else {
+                        alert("Failed to approve.");
+                    }
+                } catch (error) {
+                    console.error("Approve error:", error);
+                    alert("An error occurred while approving.");
+                }
+            });
+        });
+    });
+</script>

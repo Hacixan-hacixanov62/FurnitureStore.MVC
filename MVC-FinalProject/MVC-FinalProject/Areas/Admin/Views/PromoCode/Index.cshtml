@@ -1,0 +1,63 @@
+﻿@model List<PromoCodeListItem>
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="card-body">
+            <h4 class="card-title" style="font-size: 31px; margin-left: 25pc;">PromoCode</h4>
+            <div class="table-responsive">
+                <a asp-action="Create" class="btn btn-outline-info mt-4 mb-4">Create</a>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="color:white">Code</th>
+                            <th style="color:white">DiscountPercent</th>
+                            <th style="color:white">Usage LImit</th>
+                            <th style="color:white">Operations</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                      @foreach (var item in Model) 
+                      { 
+                          <tr >
+                                <td style="color:white">@item.Code</td>
+                                <td style="color:white">@item.DiscountPercent</td>
+                                <td style="color:white">@item.UsageLimit</td>
+                                <td>
+                                    <button class="btn btn-danger delete-tag" data-id="@item.Id">Delete</button>
+                                </td>
+
+                          </tr> 
+                      } 
+                    </tbody>
+                </table>
+
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.delete-tag').forEach(button => {
+          button.addEventListener('click', async function () {
+            const id = this.getAttribute('data-id');
+            try {
+              const response = await fetch(`/Admin/PromoCode/Delete?id=${id}`, {
+                method: 'DELETE'
+              });
+
+              if (!response.ok) {
+                alert("Silinmə zamanı xəta baş verdi.");
+                return;
+              }
+              this.closest('tr').remove();
+
+            } catch (error) {
+              console.error('Xəta:', error);
+            }
+          });
+        });
+    </script>
+}

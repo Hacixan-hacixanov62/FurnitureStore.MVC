@@ -1,0 +1,360 @@
+﻿@section Css{
+	<style>
+		.review-form {
+			max-width: 800px;
+			margin: 0 auto;
+			padding: 20px;
+			font-family: Arial, sans-serif;
+		}
+
+		.form-group {
+			margin-bottom: 20px;
+		}
+
+		.form-row {
+			display: flex;
+			gap: 15px;
+			flex-wrap: wrap;
+		}
+
+		.form-group.half-width {
+			flex: 1;
+			min-width: 250px;
+		}
+
+		.form-group.full-width {
+			width: 100%;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 5px;
+			font-weight: bold;
+			color: #333;
+		}
+
+		.form-control {
+			width: 100%;
+			padding: 10px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			font-size: 14px;
+			box-sizing: border-box;
+		}
+
+			.form-control:focus {
+				outline: none;
+				border-color: #333;
+				box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+			}
+
+		textarea.form-control {
+			resize: vertical;
+			min-height: 120px;
+		}
+
+		.comment-notes {
+			color: #666;
+			font-size: 14px;
+			margin-bottom: 20px;
+			font-style: italic;
+		}
+
+		.btn-post {
+			background-color: #000;
+			color: white;
+			padding: 12px 24px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 16px;
+			transition: background-color 0.3s;
+		}
+
+			.btn-post:hover {
+				background-color: #333;
+			}
+
+		.button-outline {
+			background-color: transparent;
+			color: #000;
+			border: 2px solid #000;
+		}
+
+			.button-outline:hover {
+				background-color: #000;
+				color: white;
+			}
+
+		/* Responsive design */
+		media (max-width: 768px) {
+			.form-row
+
+		{
+			flex-direction: column;
+		}
+
+		.form-group.half-width {
+			min-width: 100%;
+		}
+
+		}
+	</style>
+
+	<style>
+		.review {
+			margin-bottom: 20px;
+		}
+
+		.content-comment-container {
+			background-color: #f8f9fa;
+			padding: 15px;
+			border-radius: 10px;
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+			position: relative;
+		}
+
+		.review-author {
+			font-weight: bold;
+		}
+
+		.review-time {
+			font-size: 0.9rem;
+			color: #6c757d;
+		}
+
+		.edit-review-btn {
+			position: absolute;
+			top: 15px;
+			right: 15px;
+			color: #007bff;
+			font-size: 0.9rem;
+		}
+
+			.edit-review-btn:hover {
+				text-decoration: underline;
+			}
+
+		.review-comment-text {
+			margin-top: 10px;
+			font-size: 1rem;
+		}
+
+		form[id^="edit-form-"] {
+			margin-top: 15px;
+		}
+
+		.edit-form-buttons {
+			display: flex;
+			justify-content: center;
+			gap: 10px;
+			margin-top: 10px;
+		}
+
+		textarea.form-control {
+			resize: vertical;
+		}
+	</style>
+}
+@model PostReviewPage
+
+
+<div id="site-main" class="site-main">
+	<div id="main-content" class="main-content">
+		<div id="primary" class="content-area">
+			<div id="title" class="page-title" style="background-image: url(/assets/img/@Model.Settings.FirstOrDefault(x => x.Key == "BlogBanner")?.Value);">
+				<div class="section-container">
+					<div class="content-title-heading">
+						<h1 class="text-title-heading">
+							@Model.PostName
+						</h1>
+					</div>
+					<div class="breadcrumbs">
+						<a asp-controller="Home" asp-action="Index">Home</a><span class="delimiter"></span><a asp-controller="Blog" asp-action="Index">Blog</a>
+					</div>
+				</div>
+			</div>
+
+			<div id="content" class="site-content" role="main">
+				<div class="section-padding">
+					<div class="section-container p-l-r">
+						<div class="post-details no-sidebar">
+							<div class="post-image">
+								<img src="@Model.BlogPostImgs.FirstOrDefault(x=>x.IsMain)?.Image" alt="" style="max-width: 60%; height: 25rem; margin-left: 19rem;">
+							</div>
+							<h2 class="post-title text-center">
+								@Model.PostName
+							</h2>
+							<div class="post-meta">
+								<span class="post-categories"><i class="icon_folder-alt"></i> <span>@Model.BlogCategory</span></span>
+								<span class="post-time"><i class="icon_clock_alt"></i> @Model.CreatedDate</span>
+							</div>
+							<div class="post-content clearfix">
+								<p>@Model.Description</p>
+								<blockquote><p><i class="icon-quote"></i>"@Model.HighlightText”</p></blockquote>
+								<div class="content-img">
+									@{
+										var otherImgs = Model.BlogPostImgs.Where(x => !x.IsMain).ToList();
+									}
+
+									@if (otherImgs.Any())
+									{
+										foreach (var img in otherImgs)
+										{
+											<img src="@img.Image" alt="" style="max-width: 60%; height: 25rem; margin-left: 19rem;">
+										}
+									}
+									else
+									{
+										var mainImg = Model.BlogPostImgs.FirstOrDefault(x => x.IsMain);
+										if (mainImg != null)
+										{
+											<img src="@mainImg.Image" alt="" style="max-width: 60%; height: 25rem; margin-left: 19rem;">
+										}
+									}
+								</div>
+
+							</div>
+							<div class="post-content-entry">			
+								<div class="entry-social-share">
+									<label>Share :</label>
+									<div class="social-share">
+										<a href="#" title="Facebook" class="share-facebook" target="_blank"><i class="fa fa-facebook"></i>Facebook</a>
+										<a href="#" title="Twitter" class="share-twitter"><i class="fa fa-twitter"></i>Twitter</a>
+										<a href="#" title="Pinterest" class="share-pinterest"><i class="fa fa-pinterest"></i>Pinterest</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="prev-next-post">
+								@if ((bool)(ViewData["HasPrevious"] ?? false))
+								{
+									<div class="previous-post">
+										<a asp-controller="BlogDetail" asp-action="Detail" asp-route-id="@Model.PreviousBlog.Id">
+											<div class="hover-extend active"><span>Previous</span></div>
+											<h2 class="title">@Model.PreviousBlog.Title</h2>
+										</a>
+									</div>
+								}
+
+								@if ((bool)(ViewData["HasNext"] ?? false))
+								{
+									<div class="next-post">
+										<a asp-controller="BlogDetail" asp-action="Detail" asp-route-id="@Model.NextBlog.Id">
+											<div class="hover-extend active"><span>Next</span></div>
+											<h2 class="title">@Model.NextBlog.Title</h2>
+										</a>
+									</div>
+								}
+							</div>
+
+							<div id="comments" class="comments-area">
+								<h2 class="reviews-title" style="margin-left: 14pc; margin-top: 3pc;">
+									@Model.BlogReviews.Count review(s) for <span>@Model.PostName</span>
+								</h2>
+								<div class="comments-list">
+									<div class="comment-item">								
+										<div id="comments">
+											<ol class="comment-list">
+												@foreach (var review in Model.BlogReviews)
+												{
+													var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+													<li class="review" data-review-id="@review.Id">
+														<div class="content-comment-container">
+															<div class="comment-container">
+																<div class="comment-text">
+																	<div class="review-author">@review.UserName</div>
+																	<div class="review-time">@review.CreatedAt.ToString("M/d/yyyy")</div>
+
+																	@if (User.Identity.IsAuthenticated && userId == review.AppUserId)
+																	{
+																		<button type="button" class="btn btn-link btn-sm edit-review-btn" onclick="toggleEditForm(@review.Id)">
+																			<i class="fas fa-edit"></i>
+																		</button>
+																	}
+																</div>
+															</div>
+
+															<div class="description">
+																<p class="review-comment-text">@review.Comment</p>
+															</div>
+
+															@if (User.Identity.IsAuthenticated && userId == review.AppUserId)
+															{
+																<form asp-action="EditReview" method="post" id="edit-form-@review.Id" style="display:none;">
+																	<input type="hidden" name="Id" value="@review.Id" />
+																	<input type="hidden" name="AppUserId" value="@review.AppUserId" />
+																	<input type="hidden" name="PostId" value="@Model.PostId" />
+																	<div class="form-group">
+																		<label>Comment</label>
+																		<textarea name="Comment" class="form-control">@review.Comment</textarea>
+																	</div>
+																	<div class="edit-form-buttons">
+																		@* <button type="submit" class="btn btn-primary btn-sm">Save</button> *@
+																		@* <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditForm(@review.Id)">Cancel</button> *@
+																		<input name="submit" type="submit" id="submit" class="button-outline" value="Save">
+
+																		<button type="button" class="btn button-outline btn-sm" onclick="toggleEditForm(@review.Id)">Cancel</button>
+																	</div>
+																</form>
+
+
+																<form method="post" class="delete-review-form" data-review-id="@review.Id" data-product-id="@Model.PostId">
+																	<input type="hidden" name="id" value="@review.Id" />
+																	<input type="hidden" name="postId" value="@Model.PostId" />
+																	<button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+																</form>
+															}
+														</div>
+													</li>
+												}
+											</ol>
+
+										</div>
+									</div>
+								</div>
+								<div class="comment-form">
+									<span id="reply-title" class="comment-reply-title">Add a review</span>								
+									<div class="review-form">
+										<form asp-controller="BlogDetail" asp-action="AddReview" method="post">
+											<input type="hidden" name="PostId" value="@Model.PostId" />
+
+											<div class="comment-notes">Your email address will not be published.</div>
+
+											<div class="form-row">
+												<div class="form-group half-width">
+													<label for="userName">Name *</label>
+													<input name="UserName" id="userName" type="text" class="form-control" value="@User.Identity.Name" required />
+												</div>
+
+												<div class="form-group half-width">
+													<label for="userEmail">Email *</label>
+													<input name="UserEmail" id="userEmail" type="email" class="form-control" required />
+												</div>
+											</div>
+
+											<div class="form-group full-width">
+												<label for="comment">Your Review *</label>
+												<textarea name="Comment" id="comment" class="form-control" rows="5" required minlength="3" maxlength="2000"></textarea>
+											</div>
+
+											<div class="form-group full-width">
+												<input name="submit" type="submit" id="submit" class="btn-post button-outline" value="Post Comment">
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div><!-- #content -->
+		</div><!-- #primary -->
+	</div><!-- #main-content -->
+</div>
+
+
+@section Scripts {
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="~/assets/js/blog-detail.js"></script>
+}

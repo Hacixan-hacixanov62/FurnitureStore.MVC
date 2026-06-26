@@ -1,0 +1,119 @@
+﻿@* @model List<Order>
+@{
+    ViewData["Title"] = "Orders";
+}
+
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+
+        <h2>All Orders</h2>
+
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>User Email</th>
+                    <th>Order Date</th>
+                    <th>Total Price</th>
+                    <th>Items</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        <td>@(i + 1)</td>
+                        <td>@Model[i].AppUserEmail</td>
+                        <td>@Model[i].CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>$@Model[i].TotalPrice</td>
+                        <td style="font-size: 13px;">
+                            <ul>
+                                @foreach (var item in Model[i].Items)
+                                {
+                                    <li>
+                                        <strong>@item.ProductName</strong> -
+                                        Color: @item.ColorName -
+                                        Qty: @item.Quantity -
+                                        Price: $@item.Price
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+
+ *@
+
+
+  @model List<Order>
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+
+        <h2>All Orders</h2>
+
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Items</th>
+                    <th>Total Price</th>
+                    <th>User Email</th>
+                    <th>Status</th>
+                    <th>Change Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        <td style="font-size: 13px;">
+                            <ul>
+                                @foreach (var item in Model[i].Items)
+                                {
+                                    <li>
+                                        <strong>@item.ProductName</strong><br />
+                                        Color: @item.ColorName<br />
+                                        Qty: @item.Quantity<br />
+                                        Price: $@item.Price
+                                    </li>
+                                }
+                            </ul>
+
+                        </td>
+                        <td style="font-size: 12px; width: 20px;">$@Model[i].TotalPrice</td>
+                        <td style="font-size: 12px;width: 20px;">@Model[i].AppUserEmail</td>
+                        <td>
+                            <span class="badge bg-info text-dark"> @Model[i].Status</span>
+                        </td>
+                        <td>
+                            <form asp-action="ChangeStatus" method="post" style="display: flex; gap: 5px;">
+                                <input type="hidden" name="OrderId" value="@Model[i].Id" />
+
+                                <select name="NewStatus" class="form-select form-select-sm">
+                                    <option value="Pending" selected="@("Pending" == Model[i].Status)">Pending</option>
+                                    <option value="Processing" selected="@("Processing" == Model[i].Status)">Processing</option>
+                                    <option value="Shipped" selected="@("Shipped" == Model[i].Status)">Shipped</option>
+                                    <option value="Delivered" selected="@("Delivered" == Model[i].Status)">Delivered</option>
+                                    <option value="Cancelled" selected="@("Cancelled" == Model[i].Status)">Cancelled</option>
+                                </select>
+
+                                <button type="submit" class="btn btn-sm btn-warning">Change</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>

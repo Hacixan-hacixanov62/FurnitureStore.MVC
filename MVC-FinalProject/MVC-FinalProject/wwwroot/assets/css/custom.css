@@ -1,0 +1,44 @@
+﻿/*Dashboard saat CSS */
+
+.dashboard-datetime-card {
+    padding: 40px 68px;
+    border-radius: 55px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    max-width: 727px;
+    margin: 34px auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #124470;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .dashboard-datetime-card:hover {
+        background: linear-gradient(73deg, #0f3353, #d8d8d8);
+        transform: translateY(-3px);
+        color: white;
+    }
+
+.datetime-left {
+    text-align: left;
+}
+
+.datetime-day {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.datetime-date {
+    font-size: 16px;
+    color: #374151;
+}
+
+.datetime-time {
+    font-size: 32px;
+    font-weight: bold;
+    color: #111827;
+}
+
+.datetime-greeting {
+    font-size: 16px;
+    color: #4b5563;
+}

@@ -1,0 +1,308 @@
+﻿@model IEnumerable<SettingVM>
+
+	<style>
+	/* Footer için özel seçiciler */
+	#site-footer.site-footer {
+		background-color: #f8f9fa;
+	}
+
+	#site-footer .footer .section-container .block-widget-wrap .row {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 20px;
+		max-width: 100%;
+	}
+
+	/* Sol sütun - 3 bölüm yan yana (genişlik azaltıldı) */
+	#site-footer .col-lg-4.column-left {
+		flex: 0 0 70%;
+		max-width: 70%;
+	}
+
+	#site-footer .column-left .column-wrap .row {
+		display: flex;
+		gap: 15px;
+		justify-content: flex-start;
+		flex-wrap: nowrap;
+	}
+
+	/* Her bir bölüm için genişlik ayarı */
+	#site-footer .column-left .contact-section {
+		flex: 0 0 32%;
+		max-width: 32%;
+	}
+
+	#site-footer .column-left .pages-section {
+		flex: 0 0 34%;
+		max-width: 34%;
+	}
+
+	#site-footer .column-left .working-hours-section {
+		flex: 0 0 32%;
+		max-width: 32%;
+	}
+
+	/* Sağ sütun - Logo ve sosyal medya (genişlik azaltıldı) */
+	#site-footer .col-lg-4.column-right {
+		flex: 0 0 28%;
+		max-width: 28%;
+		text-align: center;
+	}
+
+	/* Block başlıkları - font boyutu küçültüldü */
+	#site-footer .block-title {
+		font-size: 16px;
+		font-weight: 600;
+		color: #333;
+		margin-bottom: 12px;
+		text-transform: uppercase;
+		line-height: 1.2;
+	}
+
+	/* Liste stilleri - spacing azaltıldı */
+	#site-footer .block-content ul,
+	#site-footer .block-menu ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	#site-footer .block-content li,
+	#site-footer .block-menu li {
+		margin-bottom: 6px;
+		color: #666;
+		line-height: 1.4;
+		font-size: 15px;
+	}
+
+	#site-footer .block-content a,
+	#site-footer .block-menu a {
+		color: #666;
+		text-decoration: none;
+		font-size: 15px;
+	}
+
+		#site-footer .block-content a:hover,
+		#site-footer .block-menu a:hover {
+			color: #333;
+		}
+
+	/* Logo */
+	#site-footer .column-right .block-image img {
+		max-width: 80px;
+		height: auto;
+		margin-bottom: 10px;
+	}
+
+	/* Uzun yazının sarılması - genişlik azaltıldı */
+	#site-footer .column-right .block-image p {
+		word-wrap: break-word;
+		word-break: break-all;
+		white-space: normal;
+		max-width: 180px;
+		margin: 0 auto 15px auto;
+		line-height: 1.3;
+		font-size: 12px;
+		color: #666;
+	}
+
+	#site-footer .column-right .block-social .social-link {
+		display: flex;
+		justify-content: center;
+		gap: 8px;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+		#site-footer .column-right .block-social .social-link li a {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 30px;
+			height: 30px;
+			background-color: transparent !important;
+			color: white;
+			border-radius: 50%;
+			text-decoration: none;
+			font-size: 12px;
+		}
+
+			#site-footer .column-right .block-social .social-link li a:hover {
+				background-color: #555;
+			}
+
+	#site-footer .m-b-20 {
+		margin-bottom: 15px !important;
+	}
+
+	media (max-width: 1200px) {
+		#site-footer .column-left .column-wrap .row
+
+	{
+		gap: 10px;
+	}
+
+	#site-footer .block-title {
+		font-size: 13px;
+		margin-bottom: 10px;
+	}
+
+	#site-footer .block-content li,
+	#site-footer .block-menu li {
+		font-size: 12px;
+		margin-bottom: 5px;
+	}
+
+	}
+
+	media (max-width: 992px) {
+		#site-footer .footer .section-container .block-widget-wrap .row
+
+	{
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	#site-footer .col-lg-4.column-left,
+	#site-footer .col-lg-4.column-right {
+		flex: 1 1 100%;
+		max-width: 100%;
+	}
+
+	#site-footer .column-left .column-wrap .row {
+		flex-direction: column;
+	}
+
+	#site-footer .column-left .contact-section,
+	#site-footer .column-left .pages-section,
+	#site-footer .column-left .working-hours-section {
+		flex: 1 1 100%;
+		max-width: 100%;
+	}
+
+	}
+
+	media (max-width: 768px) {
+		#site-footer .column-left .column-wrap .row
+
+	{
+		flex-direction: column;
+		gap: 15px;
+	}
+
+	}</style>
+
+<footer id="site-footer" class="site-footer three-columns">
+	<div class="footer">
+		<div class="section-padding">
+			<div class="section-container">
+				<div class="block-widget-wrap">
+				
+
+					<div class="row">
+						<div class="col-lg-4 column-left">
+							<div class="column-wrap">
+								<div class="row">
+									<!-- Contact Us Section -->
+									<div class="col-lg-4 contact-section">
+										<div class="block block-menu m-b-20" style="margin-left: 1pc;">
+											<h2 class="block-title">Contact Us</h2>
+											<div class="block-content">
+												<ul>
+													<li>
+														@Model.FirstOrDefault(x => x.Key == "Phone")?.Value
+													</li>
+													<li>
+														@Model.FirstOrDefault(x => x.Key == "Email")?.Value
+													</li>
+													<li>
+														@Model.FirstOrDefault(x => x.Key == "Address")?.Value
+													</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+
+									<!-- Pages Section -->
+									<div class="col-lg-4 pages-section">
+										<div class="block block-menu" style="margin-left: 2pc;">
+											<h2 class="block-title">Pages</h2>
+											<div class="block-content">
+												<ul>
+													<li>
+														<a asp-controller="Home" asp-action="Index">Home</a>
+													</li>
+													<li>
+														<a asp-controller="Shop" asp-action="Index">Shop</a>
+													</li>
+													<li>
+														<a asp-controller="Blog" asp-action="Index">Blog</a>
+													</li>
+													<li>
+														<a asp-controller="About" asp-action="Index">About</a>
+													</li>
+													<li>
+														<a asp-controller="Contact" asp-action="Index">Contact</a>
+													</li>
+													<li>
+														<a asp-controller="FAQ" asp-action="Index">FAQ</a>
+													</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+
+									<!-- Working Hours Section -->
+									<div class="col-lg-4 working-hours-section">
+										<div class="block block-menu">
+											<h2 class="block-title">Working Hours</h2>
+											<div class="block-content">
+												<ul>
+													<li>Mon - Fri: 9:00 - 18:00</li>
+													<li>Saturday: 10:00 - 17:00</li>
+													<li>Sunday: Closed</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Right Column - Logo and Social -->
+						<div class="col-lg-4 column-right">
+							<div class="column-wrap">
+								<div class="block block-image m-b-20">
+									<img width="100" src="~/assets/img/@Model.FirstOrDefault(x => x.Key == "Logo")?.Value" alt="" style="max-width: 100px;
+    height: auto;
+    margin-bottom: -17px;">
+									<p>Discover premium quality furniture that transforms your living spaces into havens of comfort and style.</p>
+								</div>
+								<div class="block block-social">
+									<ul class="social-link">
+										<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+										<li><a href="#"><i class="fa fa-instagram"></i></a></li>
+										<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+										<li><a href="#"><i class="fa fa-behance"></i></a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="footer-bottom">
+		<div class="section-padding">
+			<div class="section-container">
+				<div class="block-widget-wrap">
+					<p class="copyright text-center">Copyright © 2022. All Right Reserved</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+

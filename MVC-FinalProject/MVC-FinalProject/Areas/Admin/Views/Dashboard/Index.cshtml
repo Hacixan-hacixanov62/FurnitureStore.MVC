@@ -1,0 +1,132 @@
+﻿  <!-- partial -->
+
+@section Css {
+    <link rel="stylesheet" href="~/assets/css/custom.css">
+
+}
+
+@model IEnumerable<Product>
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+
+        @{
+            var isSearch = !string.IsNullOrWhiteSpace(Context.Request.Query["search"]);
+        }
+
+        @if (isSearch)
+        {
+            if (Model != null && Model.Any())
+            {
+                <div class="card-body">
+                    <h4 class="card-title" style="font-size: 31px; margin-left: 10pc;">Search Result</h4>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="color:white"> Image </th>
+                                    <th style="color:white"> Name </th>
+                                    <th style="color:white"> Brand </th>
+                                    <th style="color:white"> Category </th>
+                                    <th style="color:white"> Price </th>
+                                    <th style="color:white"> Operations </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int totalCount = ViewBag.TotalCount ?? 0;
+                                    bool isSuperAdmin = User.IsInRole("SuperAdmin");
+                                }
+                                @foreach (var item in Model)
+                                {
+                                    <tr id="row-@item.Id">
+                                        <td><img src="@item.MainImage" style="width:100px" alt=""></td>
+                                        <td style="color:white">@item.Name</td>
+                                        <td style="color:white">@item.Brand</td>
+                                        <td style="color:white">@item.Category</td>
+                                        <td style="color:white">@item.Price</td>
+                                        <td>
+                                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id" class="btn btn-outline-secondary">Detail</a>
+                                            <a asp-controller="Product" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">Edit</a>
+                                            @if (totalCount > 1 || isSuperAdmin)
+                                            {
+                                                <button class="btn btn-danger delete-product" data-id="@item.Id">Delete</button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning mt-3">
+                    No products found for "@Context.Request.Query["search"]".
+                </div>
+            }
+        }
+        else
+        {
+            <!-- Saat görünüşü -->
+            <div class="dashboard-datetime-card">
+                <div class="welcome-message">
+                    <h2>Welcome back, @User.Identity.Name !</h2>
+                    <p>Here's what's happening today...</p>
+                </div>
+                <div class="datetime-right">
+                    <div class="datetime-time" id="clock">14:32:45</div>
+                    <div class="datetime-greeting" id="greeting">
+                        Good afternoon
+                        <div class="datetime-right">
+                            <div class="datetime-time" id="clock">14:32:45</div>
+                            <div class="datetime-greeting" id="greeting">Good afternoon</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="datetime-left">
+                    <div class="datetime-date" id="date">April 17, 2025</div>
+                    <div class="datetime-day" id="weekday">Friday</div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+<!-- main-panel ends -->
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.delete-product').forEach(button => {
+            button.addEventListener('click', async function () {
+                const id = this.dataset.id;
+                try {
+                    const response = await fetch(`/Admin/Product/Delete/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const row = document.getElementById(`row-${id}`);
+                        if (row) row.remove();
+                    } else {
+                        alert("Delete failed.");
+                    }
+                } catch (error) {
+                    console.error("Error deleting:", error);
+                    alert("An error occurred while deleting.");
+                }
+            });
+        });
+    });
+</script>
+
+@section Scripts {
+    <script src="~/assets/js/custom.js"></script>
+}

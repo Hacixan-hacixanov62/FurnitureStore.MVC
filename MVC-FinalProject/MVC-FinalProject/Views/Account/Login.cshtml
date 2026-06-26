@@ -1,0 +1,197 @@
+﻿
+@model Login
+<div class="clear"></div>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<div class="page-login-register">
+	<div class="row" style="margin-left: 1pc; margin-right: 2px;">
+		<div class="col-lg-6 col-md-6 col-sm-12 sm-m-b-50" style="margin-left: 20pc;">
+			<div class="box-form-login">
+				<h2>Login</h2>
+				<div class="box-content">
+					<div class="form-login">
+						<form method="post" class="login">
+
+						@Html.AntiForgeryToken()
+
+							<div id="loginErrors" class="mt-2 mb-3"></div>
+
+
+						<div class="username">
+							<label>Username or email address <span class="required">*</span></label>
+							<input type="text" class="form-control form-control-user" asp-for="EmailOrUserName" autocomplete="off">
+							<span class="text-danger" asp-validation-for="EmailOrUserName"></span>
+						</div>
+							@* <div class="password">
+								<label>Password <span class="required">*</span></label>
+								<input type="password" class="form-control input-text form-control-user" asp-for="Password" id="passwordField">
+								<div class="input-group-append">
+									<span class="input-group-text" onclick="togglePasswordVisibility()">
+										<i class="fa fa-eye" id="togglePasswordIcon"></i>
+									</span>
+								</div>
+								<span class="text-danger" asp-validation-for="Password"></span>
+							</div> *@
+
+							<div class="password position-relative">
+								<label>Password <span class="required">*</span></label>
+								<input type="password" class="form-control input-text form-control-user" asp-for="Password" id="passwordField">
+
+								<div class="input-group-append">
+									<span class="input-group-text" onclick="togglePasswordVisibility()">
+										<i class="fa fa-eye" id="togglePasswordIcon"></i>
+									</span>
+								</div>
+								<span class="text-danger" asp-validation-for="Password"></span>
+							</div>
+							<!-- Caps Lock xəbərdarlığı -->
+							<span id="capsLockWarning" class="text-warning d-none">Caps Lock is open</span>
+
+							<div class="rememberme-lost">							
+								<div class="lost-password" style="margin-left: 288px;">
+									<a asp-controller="Account" asp-action="ForgetPassword">Lost your password?</a>
+								</div>
+							</div>
+
+							<div>
+								<a asp-controller="Account" asp-action="Register">Don't have an account?</a>
+							</div>
+
+							<div class="button-login">
+								<input type="submit" class="button" name="login" value="Login">
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<br />
+<br />
+
+<script>
+	const passwordField = document.getElementById("passwordField");
+	const capsLockWarning = document.getElementById("capsLockWarning");
+
+	passwordField.addEventListener("keyup", function (e) {
+		if (e.getModifierState("CapsLock")) {
+			capsLockWarning.classList.remove("d-none");
+		} else {
+			capsLockWarning.classList.add("d-none");
+		}
+	});
+
+	passwordField.addEventListener("keydown", function (e) {
+		if (e.getModifierState("CapsLock")) {
+			capsLockWarning.classList.remove("d-none");
+		} else {
+			capsLockWarning.classList.add("d-none");
+		}
+	});
+</script>
+
+<script>
+	function togglePasswordVisibility() {
+		var passwordInput = document.getElementById('passwordField');
+		var toggleIcon = document.getElementById('togglePasswordIcon');
+
+		if (passwordInput.type === 'password') {
+			passwordInput.type = 'text';
+			toggleIcon.classList.remove('fa-eye');
+			toggleIcon.classList.add('fa-eye-slash');
+		} else {
+			passwordInput.type = 'password';
+			toggleIcon.classList.remove('fa-eye-slash');
+			toggleIcon.classList.add('fa-eye');
+		}
+	}
+</script>
+<script>
+	$(document).ready(function () {
+		$('.login').submit(function (e) {
+			e.preventDefault();
+
+			var form = $(this);
+			var actionUrl = form.attr('action') || '@Url.Action("Login", "Account")';
+			var formData = form.serialize();
+
+			$.post(actionUrl, formData, function (response) {
+				if (response.success) {
+					window.location.href = response.redirectUrl;
+				} else {
+					var errorHtml = '<div class="alert alert-danger">';
+					response.errors.forEach(function (err) {
+						errorHtml += '<p>' + err + '</p>';
+					});
+					errorHtml += '</div>';
+					$('#loginErrors').html(errorHtml);
+				}
+			});
+		});
+	});
+</script>
+
+<script>
+	document.querySelector("form.login").addEventListener("submit", async function (e) {
+		e.preventDefault();
+
+		const form = e.target;
+		const formData = new FormData(form);
+
+		const response = await fetch(form.action || window.location.href, {
+			method: 'POST',
+			headers: {
+				'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+			},
+			body: formData
+		});
+
+		const result = await response.json();
+
+		const errorContainer = document.getElementById("loginErrors");
+		errorContainer.innerHTML = "";
+
+		if (result.success) {
+			window.location.href = result.redirectUrl;
+		} else if (result.errors) {
+			result.errors.forEach(err => {
+				const p = document.createElement("p");
+				p.classList.add("text-danger");
+				p.innerText = err;
+				errorContainer.appendChild(p);
+			});
+		}
+	});
+	</script>
+
+<style>
+	.password {
+		position: relative;
+	}
+
+		.password .input-group-append {
+			position: absolute;
+			right: 10px;
+			top: 50%;
+			transform: translateY(-50%);
+			margin-top: 18px;
+		}
+
+		.password .input-group-text {
+			background: transparent;
+			border: none;
+			cursor: pointer;
+			padding: 0;
+		}
+
+		.password .form-control {
+			padding-right: 40px; 
+		}
+</style>

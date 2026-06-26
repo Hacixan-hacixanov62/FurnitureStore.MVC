@@ -1,0 +1,84 @@
+﻿ @model IEnumerable<Product> 
+
+<div class="clear"></div>
+<br />
+<br />
+<div class="compare-table" style="margin-top: 4pc;">
+     <div class="compare-table-inner">
+         <a href="#" id="compare-table-close" class="compare-table-close">
+             <span class="compare-table-close-icon"></span>
+         </a>
+         <div class="compare-table-items">
+             <table id="product-table" class="product-table">
+                 <thead>
+                     <tr>
+                         <th>
+                            <a href="#" style="margin-left: 8pc" class="compare-table-settings">Settings</a>
+                         </th>
+                         @foreach (var item in Model)
+                         {
+                             <th>
+                                 <a  style="margin-left: 8pc"  asp-controller="ProductDetail" asp-action="Detail" asp-route-id="@item.Id">@item.Name</a>
+                             </th>
+                         }
+                     </tr>
+                 </thead>
+                 <tbody>
+                     <tr class="tr-image">
+                         <td class="td-label">Image</td>
+                         @foreach (var item in Model)
+                         {
+                             <td>
+                                 <a asp-controller="ProductDetail" asp-action="Detail" asp-route-id="@item.Id">
+                                     <img width="300" height="300" src="@item.MainImage" alt="@item.Name">
+                                 </a>
+                             </td>
+                         }
+                     </tr>
+                     <tr class="tr-price">
+                         <td class="td-label">Price</td>
+                         @foreach (var item in Model)
+                         {
+                             <td><span class="amount">$@item.Price</span></td>
+                         }
+                     </tr> 
+                     
+                     <tr class="tr-price">
+                         <td class="td-label">Brand</td>
+                         @foreach (var item in Model)
+                         {
+                             <td><span class="amount">@item.Brand</span></td>
+                         }
+                     </tr> 
+                     
+                     <tr class="tr-price">
+                         <td class="td-label">Category</td>
+                         @foreach (var item in Model)
+                         {
+                             <td><span class="amount">@item.Category</span></td>
+                         }
+                     </tr>
+
+                     <tr class="tr-add-to-cart">
+                         <td class="td-label">Add to cart</td>
+                         @foreach (var item in Model)
+                         {
+                             <td>
+                                 <div data-title="Add to cart">
+                            	<a asp-controller="ProductDetail" asp-action="Detail" asp-route-id="@item.Id" class="button">Add to cart</a>
+                                 </div>
+                             </td>
+                         }
+                     </tr>
+                     <tr class="tr-description">
+                         <td class="td-label">Description</td>
+                         @foreach (var item in Model)
+                         {
+                             <td>@item.Description</td>
+                         }
+                     </tr>
+                 </tbody>
+             </table>
+         </div>
+     </div>
+ </div>

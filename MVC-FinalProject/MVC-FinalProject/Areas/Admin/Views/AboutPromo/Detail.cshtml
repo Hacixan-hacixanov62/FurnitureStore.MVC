@@ -1,0 +1,29 @@
+﻿@model AboutPromo
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="container mt-5 d-flex justify-content-center">
+            <div class="card shadow-lg rounded-4" style="width: 600px; border: none;">
+                <div class="card-body">
+
+                    <div class="mb-3">
+                        <span class="fw-semibold text-secondary">📄 Image:</span>
+                        <img src="@Model.Image" style="width: 362px; height: 230px; display: block; margin-bottom: 10px;" />
+                    </div>
+
+                    <div class="mb-3">
+                        <span class="fw-semibold text-secondary">📝 Title:</span>
+                        <span class="text-muted mt-1" style="color:white">@Model.Title</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <span class="fw-semibold text-secondary">📝 Description:</span>
+                        <span class="text-muted mt-1" style="color:white" >@Model.Description</span>
+                    </div>
+
+                    <a asp-action="Index" class="btn btn-outline-primary mt-3" style="margin-bottom: 1pc;">← Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

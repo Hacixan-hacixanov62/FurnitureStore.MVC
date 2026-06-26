@@ -1,0 +1,33 @@
+﻿
+@model IEnumerable<SettingVM>
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="card-body">
+            <h4 class="card-title" style="font-size: 31px; margin-left: 25pc;">Setting</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="color:white"> Key </th>
+                            <th style="color:white"> Value </th>
+                            <th style="color:white"> Operations </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="color:white"> @item.Key </td>
+                                <td style="color:white"> @item.Value </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">Edit</a>  
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

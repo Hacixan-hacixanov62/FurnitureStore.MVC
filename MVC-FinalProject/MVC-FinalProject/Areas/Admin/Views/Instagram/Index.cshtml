@@ -1,0 +1,78 @@
+﻿
+@model IEnumerable<Instagram>
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="card-body">
+            <h4 class="card-title" style="font-size: 31px; margin-left: 25pc;">Instagram</h4>
+            <div class="table-responsive">
+                @{
+                    int totalCount = ViewBag.TotalCount ?? 0;
+                    bool isSuperAdmin = User.IsInRole("SuperAdmin");
+                }
+                <a id="createButton" asp-action="Create"
+                   class="btn btn-outline-info mt-4 mb-4"
+                   style="display:@(totalCount < 1 ? "inline-block" : "none")">Create</a>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="color:white"> Image </th>
+                            <th style="color:white"> Operations </th>
+                        </tr>
+                    </thead>
+                    <tbody id="instagram-table-body">
+                        @foreach (var item in Model)
+                        {
+                            <tr id="row-@item.Id">
+                                <td><img src="@item.Img" style="width: 200px; height: 180px" /></td>
+                                <td>
+                                    <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-outline-secondary">Detail</a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">Edit</a>
+                                    @if (totalCount > 1 || isSuperAdmin)
+                                    {
+                                        <button class="btn btn-danger delete-instagram" data-id="@item.Id">Delete</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let totalCount = parseInt("@ViewBag.TotalCount" ?? "0");
+        const createButton = document.getElementById("createButton");
+
+        document.querySelectorAll('.delete-instagram').forEach(button => {
+            button.addEventListener('click', async function () {
+                const id = this.dataset.id;
+                try {
+                    const response = await fetch(`/Admin/Instagram/Delete/${id}`, {
+                        method: 'POST',
+                    });
+
+                    if (response.ok) {
+                        const row = document.getElementById(`row-${id}`);
+                        if (row) row.remove();
+
+                        totalCount--;
+
+                        if (totalCount < 1 && createButton) {
+                            createButton.style.display = "inline-block";
+                        }
+                    } else {
+                        alert("Delete failed.");
+                    }
+                } catch (err) {
+                    console.error("Error deleting:", err);
+                    alert("An error occurred while deleting.");
+                }
+            });
+        });
+    });
+</script>

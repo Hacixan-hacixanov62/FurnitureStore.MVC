@@ -1,0 +1,66 @@
+﻿@model IEnumerable<HelpSection>
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="card-body">
+            <h4 class="card-title" style="font-size: 31px; margin-left: 25pc;">Help Section:</h4>
+            <div class="table-responsive">
+                @if (!Model.Any())
+                {
+                    <a asp-action="Create" class="btn btn-outline-info mt-4 mb-4">Create</a>
+                }
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="color:white"> PhoneNumber </th>
+                            <th style="color:white"> Customer Service Hours </th>
+                            <th style="color:white"> Weekend </th>
+                            <th style="color:white"> Operations </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr id="row-@item.Id">
+                                <td style="color:white">@item.PhoneNumber</td>
+                                <td style="color:white">@item.CustomerServiceHours</td>
+                                <td style="color:white">@(item.IsWeekendClosed ? "Closed" : "Open")</td>
+                                <td>
+                                    <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-outline-secondary">Detail</a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">Edit</a>
+                                    <button class="btn btn-danger delete-helpsection" data-id="@item.Id">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.delete-helpsection').forEach(button => {
+            button.addEventListener('click', async function () {
+                const id = this.dataset.id;
+                try {
+                    const response = await fetch(`/Admin/HelpSection/Delete/${id}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        const row = document.getElementById(`row-${id}`);
+                        if (row) row.remove();
+                    } else {
+                        alert("Delete failed.");
+                    }
+                } catch (err) {
+                    console.error("Error deleting:", err);
+                    alert("An error occurred while deleting.");
+                }
+            });
+        });
+    });
+</script>

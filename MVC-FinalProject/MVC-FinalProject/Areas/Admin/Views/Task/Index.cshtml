@@ -1,0 +1,111 @@
+﻿@model List<TaskVM>
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="card-body">
+            <h4 class="card-title" style="font-size: 31px; margin-left: 25pc;">To Do List:</h4>
+            <div class="table-responsive">
+                <a asp-action="Create" class="btn btn-outline-info mt-4 mb-4">Add</a>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="color:white">Title</th>
+                            <th style="color:white">Assigned To</th>
+                            <th style="color:white">Description</th>
+                            <th style="color:white">Completed</th>
+                            <th style="color:white">Operations</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var task in Model)
+                        {
+                            <tr id="task-row-@task.Id">
+                                <td style="color:white">@task.Title</td>
+                                <td style="color:white">@task.AssignedTo</td>
+                                <td style="color:white; white-space: normal; word-break: break-word; max-width: 400px;">
+                                    @task.Description
+                                </td>
+                               
+                                <td>
+                                    @if (task.IsCompleted)
+                                    {
+                                        <i class="fa-solid fa-check text-success fs-5"></i>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-warning">Pending</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (task.IsCompleted)
+                                    {
+                                        <button class="btn btn-danger btn-sm delete-task" data-id="@task.Id">Delete Task</button>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">Available after completion</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const finishButtons = document.querySelectorAll(".finish-task");
+
+            finishButtons.forEach(button => {
+                button.addEventListener("click", async function () {
+                    const taskId = this.getAttribute("data-task-id");
+                    const completedBy = "@User.Identity.Name";
+
+                    const response = await fetch("/GetTask/Complete", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ taskId: taskId, completedBy: completedBy })
+                    });
+
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert("Xəta baş verdi.");
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".delete-task").click(function () {
+                var id = $(this).data("id");
+                var row = $("#task-row-" + id);
+
+                $.ajax({
+                    url: '/Admin/Task/Delete/' + id,
+                    type: 'POST',
+                    success: function (res) {
+                        if (res.success) {
+                            row.remove();
+                        } else {
+                            alert("Xəta: " + res.message);
+                        }
+                    },
+                    error: function () {
+                        alert("Silinmə zamanı xəta baş verdi.");
+                    }
+                });
+            });
+        });
+    </script>
+
+}

@@ -1,0 +1,177 @@
+﻿@model ContactVM
+
+<div id="site-main" class="site-main">
+	<div id="main-content" class="main-content">
+		<div id="primary" class="content-area">
+			<div id="title" class="page-title" style="background-image: url(./assets/img/@Model.Setting.FirstOrDefault(x => x.Key == "ContactBanner")?.Value);">
+				<div class="section-container">
+					<div class="content-title-heading">
+						<h1 class="text-title-heading">
+							Contact Us
+						</h1>
+					</div>
+					<div class="breadcrumbs">
+						<a asp-controller="Home" asp-action="Index">Home</a><span class="delimiter"></span>Contact Us
+					</div>
+				</div>
+			</div>
+
+			<div id="content" class="site-content" role="main">
+				<div class="page-contact">
+					<section class="section section-padding">
+						<div class="section-container small">
+							<!-- Block Contact Map -->
+							<div class="block block-contact-map">
+								<div class="block-widget-wrap">
+									<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6078.857349718123!2d49.851365211624575!3d40.37719087132686!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40307d079efb5163%3A0xc20aa51a5f0b5e01!2sCode%20Academy!5e0!3m2!1sen!2saz!4v1751121557071!5m2!1sen!2saz" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+								</div>
+							</div>
+						</div>
+					</section>
+
+					@if (Model.HelpSections != null && Model.HelpSections.Any())
+					{
+						<section class="section section-padding m-b-70">
+							<div class="section-container">
+								<!-- Block Contact Info -->
+								<div class="block block-contact-info">
+									<div class="block-widget-wrap">
+										<div class="info-icon">
+											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="svg-icon2 plant" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve">
+											<g>
+											<path xmlns="http://www.w3.org/2000/svg" d="m320.174 28.058a8.291 8.291 0 0 0 -7.563-4.906h-113.222a8.293 8.293 0 0 0 -7.564 4.907l-66.425 148.875a8.283 8.283 0 0 0 7.564 11.655h77.336v67.765a20.094 20.094 0 1 0 12 0v-67.765h27.7v288.259h-48.441a6 6 0 0 0 0 12h108.882a6 6 0 0 0 0-12h-48.441v-288.259h117.04a8.284 8.284 0 0 0 7.564-11.657zm-103.874 255.567a8.094 8.094 0 1 1 8.094-8.093 8.1 8.1 0 0 1 -8.094 8.093zm-77.61-107.036 63.11-141.437h108.4l63.11 141.437z" fill="" data-original="" style=""></path>
+								</g>
+						    	</svg>
+										</div>
+										<div class="info-title">
+											<h2>Need Help?</h2>
+										</div>
+										<div class="info-items">
+											<div class="row">
+												<div class="col-md-4 sm-m-b-30">
+													<div class="info-item" style="margin-left: 14pc;">
+														<div class="item-tilte">
+															<h2>Phone</h2>
+														</div>
+														<div class="item-content">
+															@Model.HelpSections.FirstOrDefault()?.PhoneNumber
+														</div>
+													</div>
+												</div>
+												<div class="col-md-4 sm-m-b-30" style="margin-left: 17pc;">
+													<div class="info-item">
+														<div class="item-tilte">
+															<h2>Customer Service</h2>
+														</div>
+														<div class="item-content">
+															<p>@Model.HelpSections.FirstOrDefault()?.CustomerServiceHours</p>
+															<p> "Are we closed on weekends? @Model.HelpSections.FirstOrDefault()?.IsWeekendClosed because making life inconvenient is an art form!" </p>
+														</div>
+														
+													</div>
+												</div>												
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</section>
+					}
+
+
+					<section class="section section-padding contact-background m-b-0">
+						<div class="section-container small">
+							<!-- Block Contact Form -->
+							<div class="block block-contact-form">
+								<div class="block-widget-wrap">
+									<div class="block-title">
+										<h2>Send Us Your Questions!</h2>
+										<div class="sub-title">We’ll get back to you within two days.</div>
+									</div>
+									<div class="block-content">
+										<form id="subscribeForm" method="post" class="contact-form" novalidate="novalidate">
+											@Html.AntiForgeryToken()
+											<div class="contact-us-form">
+												<div class="row">
+													<div class="col-sm-12 col-md-6">
+														<label class="required">Name</label><br>
+														<span class="form-control-wrap">
+															<input type="text" name="name" value="" size="40" class="form-control" aria-required="true">
+														</span>
+													</div>
+													<div class="col-sm-12 col-md-6">
+														<label class="required">Email</label><br>
+														<span class="form-control-wrap">
+															<input type="email" name="email" value="" size="40" class="form-control" aria-required="true">
+														</span>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-sm-12">
+														<label class="required">Message</label><br>
+														<span class="form-control-wrap">
+															<textarea name="message" cols="40" rows="10" class="form-control" aria-required="true"></textarea>
+														</span>
+													</div>
+												</div>
+												<div class="form-button">
+													<input type="submit" value="Submit" class="button">
+												</div>
+												<div id="subscribe-message" class="mt-3"></div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+				</div>
+			</div><!-- #content -->
+		</div><!-- #primary -->
+	</div><!-- #main-content -->
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	$(document).ready(function () {
+		$('#subscribeForm').submit(function (e) {
+			e.preventDefault();
+
+			const name = $('input[name="name"]').val();
+			const email = $('input[name="email"]').val();
+			const message = $('textarea[name="message"]').val();
+			const token = $('input[name="__RequestVerificationToken"]').val();
+
+			$.ajax({
+				type: 'POST',
+				url: '/Contact/Create',
+				data: {
+					__RequestVerificationToken: token,
+					name: name,
+					email: email,
+					message: message
+				},
+				success: function (res) {
+					if (res.success) {
+						$('#subscribe-message').html(
+							`<div class="alert alert-success">${res.message}</div>`
+						);
+						$('input[name="name"]').val('');
+						$('input[name="email"]').val('');
+						$('textarea[name="message"]').val('');
+					} else {
+						$('#subscribe-message').html(
+							`<div class="alert alert-danger">${res.message}</div>`
+						);
+					}
+				},
+				error: function () {
+					$('#subscribe-message').html(
+						`<div class="alert alert-danger">Unexpected error occurred.</div>`
+					);
+				}
+			});
+		});
+	});
+</script>

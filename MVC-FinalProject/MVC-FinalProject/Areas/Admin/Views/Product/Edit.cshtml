@@ -1,0 +1,226 @@
+﻿@model ProductEdit
+@{
+    ViewData["Title"] = "Edit Product";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <h2>Edit Product</h2>
+
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            @Html.HiddenFor(x => x.Id)
+
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" style="color:white" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Price"></label>
+                <input asp-for="Price" class="form-control" style="color:white" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Stock"></label>
+                <input asp-for="Stock" class="form-control" style="color:white" />
+                <span asp-validation-for="Stock" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" class="form-control" style="color:white"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="BrandId"></label>
+                <select asp-for="BrandId" asp-items="ViewBag.Brands" class="form-control">
+                    <option disabled selected style="color:white">-- Select Brand --</option>
+                </select>
+                <span asp-validation-for="BrandId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CategoryId"></label>
+                <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control">
+                    <option disabled selected style="color:white">-- Select Category --</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TagIds"></label>
+                <select asp-for="TagIds" asp-items="ViewBag.Tags" multiple class="form-control">
+                </select>
+                <span asp-validation-for="TagIds" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ColorIds"></label>
+                <select asp-for="ColorIds" asp-items="ViewBag.Colors" multiple class="form-control">
+                </select>
+                <span asp-validation-for="ColorIds" class="text-danger"></span>
+            </div>
+
+            <div id="product-container" data-route-id="@Model.Id">
+
+                @{
+                    var images = ViewBag.ExistingImages as List<ProductImage>;
+                }
+
+                @if (ViewBag.ExistingImages != null)
+                {
+                    <div class="form-group">
+                        <label>Current Images</label>
+                        <div class="row">
+                            @foreach (var image in images)
+                            {
+                                <div class="col-md-3 mb-3 text-center" id="image-@image.Id">
+                                    <div class="card">
+                                        <img src="@image.Img" class="card-img-top" style="height: 150px; object-fit: contain;" />
+                                        <div class="card-body p-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="MainImageId" value="@image.Id"
+                                                @(image.IsMain ? "checked" : "") />
+                                                <label class="form-check-label">Main</label>
+                                            </div>
+                                            <button type="button" class="btn btn-outline-danger btn-sm mt-2" onclick="deleteImage(@image.Id)">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+            <div class="form-group">
+                <label asp-for="UploadImages">Upload New Images</label>
+                <input asp-for="UploadImages" type="file" multiple class="form-control-file" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+
+        //         function deleteImage(imageId) {
+        //     const productId = document.getElementById("product-container")?.dataset.routeId;
+
+        //     if (!productId) {
+        //         console.error("Product ID not found!");
+        //         return;
+        //     }
+
+        //     Silmək üçün POST sorğu
+        //     fetch(`/Admin/Product/DeleteImage?productId=${productId}&productImageId=${imageId}`, {
+        //         method: "POST"
+        //     })
+        //     .then(async response => {
+        //         if (!response.ok) {
+        //             const error = await response.json();
+        //             console.error("Error deleting image:", error.message);
+        //             return;
+        //         }
+
+        //         Silinən şəkil div-ni DOM-dan çıxar
+        //         const deletedImageDiv = document.getElementById(`image-${imageId}`);
+        //         if (!deletedImageDiv) return;
+
+        //         Silinən şəkilin Main olub olmadığını yoxla (radio checked olub)
+        //         const wasMain = deletedImageDiv.querySelector('input[type="radio"]').checked;
+
+        //         deletedImageDiv.remove();
+
+        //         Əgər silinən şəkil Main idisə, başqa şəkil varsa onu seç
+        //         if (wasMain) {
+        //             const remainingRadios = document.querySelectorAll('#product-container input[type="radio"]');
+
+        //             if (remainingRadios.length > 0) {
+        //                 İlk qalan şəkli Main seç
+        //                 remainingRadios[0].checked = true;
+
+        //                 Qeyd: Backenddə main dəyişimi olmayacaq, amma UI baxımından bu kifayətdir
+        //             }
+        //         }
+
+        //         Əgər yalnız 1 şəkil qalıbsa onun Delete düyməsini gizlət
+        //         const remainingImages = document.querySelectorAll('[id^="image-"]');
+        //         if (remainingImages.length === 1) {
+        //             const deleteBtn = remainingImages[0].querySelector("button");
+        //             if (deleteBtn) deleteBtn.style.display = "none";
+        //         }
+        //     })
+        //     .catch(error => {
+        //         console.error("Error:", error);
+        //     });
+        // }
+
+
+                function updateDeleteButtonsVisibility() {
+            const images = document.querySelectorAll('[id^="image-"]');
+            images.forEach(imgDiv => {
+                const deleteBtn = imgDiv.querySelector("button");
+                if (!deleteBtn) return;
+                if (images.length === 1) {
+                    deleteBtn.style.display = "none";
+                } else {
+                    deleteBtn.style.display = "inline-block";
+                }
+            });
+        }
+
+        function deleteImage(imageId) {
+            const productId = document.getElementById("product-container")?.dataset.routeId;
+
+            if (!productId) {
+                console.error("Product ID not found!");
+                return;
+            }
+
+            fetch(`/Admin/Product/DeleteImage?productId=${productId}&productImageId=${imageId}`, {
+                method: "POST"
+            })
+            .then(async response => {
+                if (!response.ok) {
+                    const error = await response.json();
+                    console.error("Error deleting image:", error.message);
+                    return;
+                }
+
+                const deletedImageDiv = document.getElementById(`image-${imageId}`);
+                if (!deletedImageDiv) return;
+
+                const wasMain = deletedImageDiv.querySelector('input[type="radio"]').checked;
+
+                deletedImageDiv.remove();
+
+                if (wasMain) {
+                    const remainingRadios = document.querySelectorAll('#product-container input[type="radio"]');
+                    if (remainingRadios.length > 0) {
+                        remainingRadios[0].checked = true;
+                    }
+                }
+
+                updateDeleteButtonsVisibility();
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+
+        // Səhifə yüklənəndə bir dəfə çağır
+        document.addEventListener("DOMContentLoaded", function() {
+            updateDeleteButtonsVisibility();
+        });
+
+    </script>
+}

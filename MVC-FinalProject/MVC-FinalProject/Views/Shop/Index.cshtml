@@ -1,0 +1,500 @@
+﻿@section Css {
+	<style>
+		.price-filter {
+			width: 280px;
+			padding: 15px;
+			font-family: Arial, sans-serif;
+			background: white;
+		}
+
+		.price-label {
+			font-size: 14px;
+			font-weight: bold;
+			color: #333;
+			margin-bottom: 15px;
+			letter-spacing: 1px;
+		}
+
+		.price-values {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 12px;
+			font-size: 13px;
+			color: #999;
+		}
+
+		.slider-container {
+			position: relative;
+			height: 20px;
+			margin-bottom: 12px;
+		}
+
+		.slider-track {
+			position: absolute;
+			top: 50%;
+			left: 0;
+			right: 0;
+			height: 4px;
+			background: #ddd;
+			transform: translateY(-50%);
+			border-radius: 2px;
+		}
+
+		.slider-range {
+			position: absolute;
+			top: 50%;
+			height: 4px;
+			background: #333;
+			transform: translateY(-50%);
+			border-radius: 2px;
+		}
+
+		.slider {
+			position: absolute;
+			top: 0;
+			width: 100%;
+			height: 20px;
+			background: transparent;
+			pointer-events: none;
+			-webkit-appearance: none;
+			appearance: none;
+		}
+
+			.slider::-webkit-slider-thumb {
+				-webkit-appearance: none;
+				appearance: none;
+				width: 20px;
+				height: 20px;
+				background: #333;
+				border-radius: 50%;
+				cursor: pointer;
+				pointer-events: all;
+				border: 2px solid white;
+				box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+			}
+
+			.slider::-moz-range-thumb {
+				width: 20px;
+				height: 20px;
+				background: #333;
+				border-radius: 50%;
+				cursor: pointer;
+				pointer-events: all;
+				border: 2px solid white;
+				box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+			}
+
+		.current-values {
+			display: flex;
+			justify-content: space-between;
+			font-size: 14px;
+			font-weight: bold;
+			color: #333;
+			margin-top: 10px;
+		}
+
+		.current-min {
+			margin-left: 10px;
+		}
+
+		.current-max {
+			margin-right: 10px;
+		}
+	</style>
+}
+
+@model ShopVM
+<div id="site-main" class="site-main">
+	<div id="main-content" class="main-content">
+		<div id="primary" class="content-area">
+			<div id="title" class="page-title" style="background-image: url(/assets/img/@Model.Setting.FirstOrDefault(x => x.Key == "ShopBanner")?.Value);">
+				<div class="section-container">
+					<div class="content-title-heading">
+						<h1 class="text-title-heading">
+							shop
+						</h1>
+					</div>
+					<div class="breadcrumbs">
+						<a asp-controller="Home" asp-action="Index">Home</a><span class="delimiter"></span><a asp-controller="Shop" asp-action="Index">Shop</a><span class="delimiter"></span>Bed &amp; Bath
+					</div>
+				</div>
+			</div>
+
+			<div id="content" class="site-content" role="main">
+				<div class="section-padding">
+					<div class="section-container p-l-r">
+						<div class="row">
+							<div class="col-xl-3 col-lg-3 col-md-12 col-12 sidebar left-sidebar md-b-50">
+
+								<!-- Block Product Categories -->
+								<div class="block block-product-cats">
+									<div class="block-title"><h2>Categories</h2></div>
+									<div class="block-content">
+										<div class="product-cats-list">
+											<ul id="categoryList">
+												@foreach (var item in Model.Categories)
+												{
+													<li>
+														<a href="javascript:void(0);" onclick="filterProducts('@item.Name', null, null, null)">
+															@item.Name
+
+															<span class="count">
+																@(ViewBag.CategoryProductCounts != null && ViewBag.CategoryProductCounts.ContainsKey(item.Name)
+																													? ViewBag.CategoryProductCounts[item.Name]
+																													: 0)
+															</span>
+														</a>
+													</li>
+												}
+											</ul>
+										</div>
+									</div>
+								</div>
+
+								<form id="priceFilterForm">
+									<input type="hidden" name="categoryName" value="@Context.Request.Query["categoryName"]" />
+									<input type="hidden" name="brandName" value="@Context.Request.Query["brandName"]" />
+									<input type="hidden" name="colorName" value="@Context.Request.Query["colorName"]" />
+									<input type="hidden" name="tagName" value="@Context.Request.Query["tagName"]" />
+									<input type="hidden" name="sortType" value="@Context.Request.Query["sortType"]" />
+
+									<div class="price-filter">
+										<div class="price-label">PRICE</div>
+										<div class="price-range-container">
+											<div class="slider-container">
+												<div class="slider-track"></div>
+												<div class="slider-range"></div>
+
+												<input type="range" name="minPrice" class="slider slider-min" min="0" max="@ViewBag.MaxPrice" value="@Context.Request.Query["minPrice"] ??" step="1" />
+												@* <input type="range" name="maxPrice" class="slider slider-max" min="0" max="400" value="@Context.Request.Query["maxPrice"] ??"  step="10" /> *@
+												<input type="range" name="maxPrice" class="slider slider-max"
+													   min="0"
+													   max="@ViewBag.MaxPrice"
+													   value="@Context.Request.Query["maxPrice"] ?? ViewBag.MaxPrice"
+													   step="1" />
+
+											</div>
+											<div class="current-values">
+												<span class="current-min">0 $</span>
+												<span class="current-max">400 $</span>
+											</div>
+										</div>
+									</div>
+								</form> 
+ 
+
+								
+
+								<!-- Block Product Filter -->
+								<div class="block block-product-cats">
+									<div class="block-title"><h2>Brands</h2></div>
+									<div class="block-content">
+										<div class="product-cats-list">
+											<ul id="brandList">
+												@foreach (var item in Model.Brands)
+												{
+													<li>
+														<a href="javascript:void(0);" onclick="filterProducts(null, '@item.Name', null, null)">
+															@item.Name
+															<span class="count">@ViewBag.BrandProductCounts[item.Name]</span>
+														</a>
+													</li>
+												}
+											</ul>
+										</div>
+									</div>
+								</div>
+
+								<div class="block block-post-tags">
+									<div class="block-title"><h2>Tags</h2></div>
+									<div class="block-content">
+										<div class="post-tags-list">
+											<ul id="tagList">
+												@foreach (var item in Model.Tags)
+												{
+													<li>
+														<a href="javascript:void(0);" onclick="filterProducts(null, null, '@item.Name', null)">
+															@item.Name
+
+														</a>
+													</li>
+
+												}
+											</ul>
+										</div>
+									</div>
+								</div>
+								<!-- Block Products -->
+								<div class="block block-products">
+									<div class="block-title"><h2>New Product</h2></div>
+									<div class="block-content">
+										<ul class="products-list">
+											@if (Model.Products != null && Model.Products.Any())
+											{
+												@foreach (var item in Model.Products.OrderByDescending(x => x.CreatedDate).Take(3))
+												{
+													<li class="product-item">
+														<a asp-controller="ProductDetail" class="product-image" asp-action="Detail" asp-route-id="@item.Id">
+															<img src="@item.MainImage">
+														</a>
+														<div class="product-content">
+															<h2 class="product-title">
+																<a asp-controller="ProductDetail" class="product-image" asp-action="Detail" asp-route-id="@item.Id">
+																	@item.Name
+																</a>
+															</h2>
+															<span class="price">
+																<del aria-hidden="true"><span>@item.Price</span></del>
+															</span>
+														</div>
+													</li>
+
+												}
+											}
+										</ul>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-xl-9 col-lg-9 col-md-12 col-12">
+								<div class="products-topbar clearfix">
+									<div class="products-topbar-left">
+										<div class="products-count">
+										</div>
+									</div>
+									<div class="products-topbar-right">
+										<div class="products-sort dropdown">
+											<span class="sort-toggle dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Sorting</span>
+											<ul class="sort-list dropdown-menu">
+												<li><a href="javascript:void(0);" onclick="sortProducts('A-Z')">A-Z</a></li>
+												<li><a href="javascript:void(0);" onclick="sortProducts('Z-A')">Z-A</a></li>
+												<li><a href="javascript:void(0);" onclick="sortProducts('Latest')">Sort By Latest</a></li>
+												<li><a href="javascript:void(0);" onclick="sortProducts('PriceLowToHigh')">Sort By Price: Low To High</a></li>
+												<li><a href="javascript:void(0);" onclick="sortProducts('PriceHighToLow')">Sort By Price: High To Low</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+
+								<div class="tab-content">
+									<div class="tab-pane fade show active" id="layout-grid" role="tabpanel">
+										<div class="products-list grid">
+											<input type="hidden" class="products-count" value="@ViewBag.ProductsCount" />
+
+											@if (Model.Products != null && Model.Products.Any())
+											{
+												<div class="row products-area" id="productsContainer">
+													@await Html.PartialAsync("_ProductPartial", Model.Products)
+												</div>
+											}
+										
+
+											<div class="btn-all">
+												<!-- Show More düyməsini yalnız ShowMoreVisible true olduqda göstəririk -->
+												@if (Model.ShowMoreVisible)
+												{
+													<button id="show-more-btn" class="button-outline" style="margin-left: 21pc; margin-top:2pc; margin-bottom: 3pc;">
+														VIEW ALL
+													</button>
+												}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div><!-- #content -->
+		</div><!-- #primary -->
+	</div><!-- #main-content -->
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/assets/js/shop.js"></script>
+<script>
+	$(document).ready(function () {
+		const step = 1;
+		const minInput = $('input.slider-min');
+		const maxInput = $('input.slider-max');
+
+		function updateDisplay(minPrice, maxPrice) {
+			$('.current-min').text(minPrice + ' $');
+			$('.current-max').text(maxPrice + ' $');
+		}
+
+		function ajaxUpdate() {
+			let formData = $('#priceFilterForm').serialize();
+
+			const urlParams = new URLSearchParams(window.location.search);
+			['categoryName', 'brandName', 'colorName', 'tagName', 'sortType'].forEach(param => {
+				const val = urlParams.get(param) || '';
+				$(`#priceFilterForm input[name="${param}"]`).val(val);
+			});
+
+			$.ajax({
+				url: '@Url.Action("Index", "Shop")',
+				type: 'GET',
+				data: formData,
+				success: function (data) {
+					let parsed = new DOMParser().parseFromString(data, 'text/html');
+					let newProductsHtml = parsed.getElementById('productsContainer').innerHTML;
+					$('#productsContainer').html(newProductsHtml);
+
+					const minPrice = minInput.val();
+					const maxPrice = maxInput.val();
+
+					const urlParams = new URLSearchParams(window.location.search);
+					urlParams.set('minPrice', minPrice);
+					urlParams.set('maxPrice', maxPrice);
+
+					history.replaceState(null, '', window.location.pathname + '?' + urlParams.toString());
+				},
+				error: function () {
+				}
+			});
+		}
+
+		$('.slider').on('input', function () {
+			let minPrice = parseInt(minInput.val());
+			let maxPrice = parseInt(maxInput.val());
+
+			if ($(this).hasClass('slider-min')) {
+				if (minPrice >= maxPrice) {
+					minPrice = maxPrice - step;
+					if (minPrice < parseInt(minInput.attr('min'))) minPrice = parseInt(minInput.attr('min'));
+					minInput.val(minPrice);
+				}
+			} else if ($(this).hasClass('slider-max')) {
+				if (maxPrice <= minPrice) {
+					maxPrice = minPrice + step;
+					if (maxPrice > parseInt(maxInput.attr('max'))) maxPrice = parseInt(maxInput.attr('max'));
+					maxInput.val(maxPrice);
+				}
+			}
+
+			updateDisplay(minPrice, maxPrice);
+		});
+		$('.slider').on('change', function () {
+			ajaxUpdate();
+		});
+		updateDisplay(
+			parseInt(minInput.val()) || 0,
+			parseInt(maxInput.val()) || parseInt(maxInput.attr('max'))
+		);
+	});
+
+
+	$(document).ready(function () {
+		function updateCurrentPriceDisplay() {
+			let min = $('.slider-min').val();
+			let max = $('.slider-max').val();
+
+			$('.current-min').text(min + ' $');
+			$('.current-max').text(max + ' $');
+		}
+		updateCurrentPriceDisplay();
+		$('.slider').on('input change', function () {
+			updateCurrentPriceDisplay();
+		});
+	});
+</script>
+
+<script>
+	let skipCount = 6;
+	const totalProducts = @Model.TotalProductCount;
+
+	document.getElementById("show-more-btn").addEventListener("click", function () {
+		fetch(`/Shop/ShowMore?skip=${skipCount}`)
+			.then(response => {
+				if (!response.ok) throw new Error("Server error");
+				return response.text();
+			})
+			.then(html => {
+				if (!html || html.trim() === "") {
+					document.getElementById("show-more-btn").style.display = "none";
+					return;
+				}
+
+				document.getElementById("productsContainer").insertAdjacentHTML("beforeend", html);
+
+				skipCount += 6;
+				if (skipCount >= totalProducts) {
+					document.getElementById("show-more-btn").style.display = "none";
+				}
+			})
+			.catch(err => {
+				console.error(err);
+				alert("Something went wrong");
+			});
+	});
+</script>
+
+
+
+
+
+
+
+
+<script>
+	// fetch funksiyasına əlavə edəcəyik ki, sort və ya filter edildikdə Show More gizləsin
+	function sortProducts(sortType) {
+		let currentUrl = new URL(window.location.href);
+		currentUrl.searchParams.set("sortType", sortType);
+
+		fetch(currentUrl.toString())
+			.then(response => response.text())
+			.then(data => {
+				let parser = new DOMParser();
+				let doc = parser.parseFromString(data, "text/html");
+				document.getElementById("productsContainer").innerHTML = doc.getElementById("productsContainer").innerHTML;
+
+				// ✅ skipCount və show more düyməsi
+				skipCount = document.querySelectorAll('#productsContainer .product-item').length;
+				const total = parseInt(doc.querySelector('.products-count')?.value || 0);
+				const showMoreBtn = document.getElementById("show-more-btn");
+				const showMoreVisible = doc.querySelector('#show-more-btn') != null;
+
+				if (showMoreVisible) {
+					showMoreBtn.style.display = "block";
+				} else {
+					showMoreBtn.style.display = "none";
+				}
+			})
+			.catch(error => console.error("Error fetching sorted products:", error));
+	}
+
+	function filterProducts(categoryName, brandName, tagName, colorName) {
+		let queryParams = [];
+		if (categoryName) queryParams.push(`categoryName=${encodeURIComponent(categoryName)}`);
+		if (brandName) queryParams.push(`brandName=${encodeURIComponent(brandName)}`);
+		if (tagName) queryParams.push(`tagName=${encodeURIComponent(tagName)}`);
+		if (colorName) queryParams.push(`colorName=${encodeURIComponent(colorName)}`);
+
+		let queryString = queryParams.join("&");
+		let url = `/Shop/Index?${queryString}`;
+
+		fetch(url)
+			.then(response => response.text())
+			.then(data => {
+				let parser = new DOMParser();
+				let doc = parser.parseFromString(data, "text/html");
+				document.getElementById("productsContainer").innerHTML = doc.getElementById("productsContainer").innerHTML;
+
+				// ✅ skipCount və show more düyməsi
+				skipCount = document.querySelectorAll('#productsContainer .product-item').length;
+				const total = parseInt(doc.querySelector('.products-count')?.value || 0);
+				const showMoreBtn = document.getElementById("show-more-btn");
+				const showMoreVisible = doc.querySelector('#show-more-btn') != null;
+
+				if (showMoreVisible) {
+					showMoreBtn.style.display = "block";
+				} else {
+					showMoreBtn.style.display = "none";
+				}
+			})
+			.catch(error => console.error("Error fetching products:", error));
+	}
+
+</script>

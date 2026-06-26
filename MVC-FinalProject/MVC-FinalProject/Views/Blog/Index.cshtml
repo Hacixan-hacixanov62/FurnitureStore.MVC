@@ -1,0 +1,228 @@
+﻿﻿
+@model BlogVM
+
+<div id="site-main" class="site-main">
+	<div id="main-content" class="main-content">
+		<div id="primary" class="content-area">
+			<div id="title" class="page-title" style="background-image: url(./assets/img/@Model.Setting.FirstOrDefault(x => x.Key == "BlogBanner")?.Value); margin-top: -2pc;">
+				<div class="section-container">
+					<div class="content-title-heading">
+						<h1 class="text-title-heading">
+							Blog
+						</h1>
+					</div>
+					<div class="breadcrumbs">
+						<a asp-controller="Home" asp-action="Index">Home</a><span class="delimiter"></span>Home Decor
+					</div>
+				</div>
+			</div>
+
+			<div id="content" class="site-content" role="main">
+				<div class="section-padding">
+					<div class="section-container p-l-r">
+						<div class="row">
+							<div class="col-xl-3 col-lg-3 col-md-12 col-12 sidebar left-sidebar md-b-50">
+								<!-- Block Post Search -->
+								<div class="block block-post-search">
+									<div class="block-title"><h2>Search</h2></div>
+									<div class="block-content">
+									
+										<form id="searchForm" method="get" class="search-from" asp-controller="Blog" asp-action="Search">
+											<input type="text" value="@Model.SearchText" name="name" class="s" placeholder="Search...">
+											<button class="btn" type="submit">
+												<i class="icon-search"></i>
+											</button>
+										</form>
+									
+
+									</div>
+								</div>
+
+								@if (Model.BlogCategories != null && Model.BlogCategories.Any())
+				                {
+								<!-- Block Post Categories -->
+								<div class="block block-post-cats">
+									<div class="block-title"><h2>Categories</h2></div>
+									<div class="block-content">
+										<div class="post-cats-list">
+											<ul>
+												@foreach (var item in Model.BlogCategories)
+												{
+													<li>
+															<a href="javascript:void(0);" onclick="filterByCategory('@item.Name', null, null, null)">
+																@item.Name
+																<span class="count">
+																	@(ViewBag.CategoryPostCounts != null && ViewBag.CategoryPostCounts.ContainsKey(item.Name)
+																														? ViewBag.CategoryPostCounts[item.Name]
+																														: 0)
+																</span>
+														
+														</a>
+													</li>
+												}												
+											</ul>
+										</div>
+									</div>
+								</div>
+								}
+
+								<!-- Block Posts -->
+								<div class="block block-posts">
+									<div class="block-title"><h2>Recent Posts</h2></div>
+									<div class="block-content">
+										<ul class="posts-list">
+											@if (Model.Paginate?.Items != null && Model.Paginate.Items.Any())
+                                            {
+											@foreach (var item in Model.Paginate.Items.OrderByDescending(x=>x.CreatedDate).Take(3))
+											{
+												<li class="post-item">
+													<a asp-controller="BlogDetail" asp-action="Detail" asp-route-id="@item.Id">
+															<img src="@item.Images.FirstOrDefault(x => x.IsMain)?.Image" alt="Blog image" style="max-width: 6pc;">
+													</a>
+
+
+													<div class="post-content">
+														<h2 class="post-title">
+															<a href="blog-details-right.html">
+																@item.Title
+															</a>
+														</h2>
+														<div class="post-time">
+																<span class="post-date">@item.CreatedDate.ToString("MM/yy/dddd")</span>
+														</div>
+													</div>
+												</li>
+											}								
+											}
+										</ul>
+									</div>
+								</div>
+
+							
+								<div class="block block-post-archives">
+									<div class="block-title"></div>
+									<div class="block-content">
+										<div class="post-archives-list">
+											@* <ul> *@
+											@* 	<li> *@
+											@* 		<a href="blog-grid-left.html">May 2021</a> *@
+											@* 	</li> *@
+											@* 	<li> *@
+											@* 		<a href="blog-grid-left.html">April 2021</a> *@
+											@* 	</li> *@
+											@* 	<li> *@
+											@* 		<a href="blog-grid-left.html">August 2020</a> *@
+											@* 	</li> *@
+											@* </ul> *@
+										</div>
+									</div>
+								</div>			
+							</div>
+
+							<div class="col-xl-9 col-lg-9 col-md-12 col-12">
+
+									<div id="pagination-content">
+										@await Html.PartialAsync("_BlogSearchPartial", Model)
+									</div>
+							
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
+
+			function filterByCategory(categoryName) {
+		if (!categoryName) return;
+
+		let url = `/Blog/Index?categoryName=${encodeURIComponent(categoryName)}`;
+
+		fetch(url, {
+			headers: {
+				'X-Requested-With': 'XMLHttpRequest'
+			}
+		})
+		.then(res => res.text())
+		.then(data => {
+			let parser = new DOMParser();
+			let doc = parser.parseFromString(data, "text/html");
+			let newContent = doc.getElementById("productsContainer");
+			if (newContent) {
+				document.getElementById("productsContainer").innerHTML = newContent.innerHTML;
+			} else {
+				console.error("productsContainer not found in response");
+			}
+		})
+		.catch(err => console.error("Error fetching data:", err));
+	}
+
+
+</script>
+
+<script>
+	function loadContent(url) {
+		fetch(url, {
+			headers: {
+				'X-Requested-With': 'XMLHttpRequest'
+			}
+		})
+		.then(res => res.text())
+		.then(html => {
+			const container = document.querySelector("#pagination-content");
+			container.innerHTML = html;
+		});
+	}
+
+	// Delegated event listener (həmişə işləyəcək, refresh olmadan)
+	document.addEventListener("submit", function (e) {
+		if (e.target && e.target.id === "searchForm") {
+			e.preventDefault();
+			const query = e.target.querySelector("input[name='name']").value;
+			loadContent(`/Blog/Search?name=${encodeURIComponent(query)}`);
+		}
+	});
+
+	// Pagination üçün (onsuz da işləyir, amma birləşdirək)
+	document.addEventListener("click", function (e) {
+		if (e.target.matches(".page-numbers")) {
+			e.preventDefault();
+			const page = e.target.getAttribute("data-page");
+			if (page) {
+				loadContent(`/Blog/Index?page=${page}`);
+			}
+		}
+	});
+</script>
+
+<script>
+
+	document.addEventListener('DOMContentLoaded', function () {
+		document.querySelector('#pagination-content').addEventListener('click', function (e) {
+			if (e.target.matches('.page-numbers[data-page]')) {
+				e.preventDefault();
+				const page = e.target.getAttribute('data-page');
+
+				fetch(`?page=${page}`, {
+					headers: {
+						'X-Requested-With': 'XMLHttpRequest'
+					}
+				})
+					.then(response => response.text())
+					.then(html => {
+						const parser = new DOMParser();
+						const doc = parser.parseFromString(html, 'text/html');
+						const newContent = doc.querySelector('#pagination-content');
+						if (newContent) {
+							document.querySelector('#pagination-content').innerHTML = newContent.innerHTML;
+							window.history.pushState(null, '', `?page=${page}`);
+						}
+					});
+			}
+		});
+	});
+</script>

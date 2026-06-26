@@ -1,0 +1,115 @@
+﻿
+@model PaginationResponse<BlogPost>
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="card-body">
+            <h4 class="card-title" style="font-size: 31px; margin-left: 25pc;">Blog Post:</h4>
+            <div class="table-responsive">
+                <a asp-action="Create" class="btn btn-outline-info mt-4 mb-4">Create</a>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th> Image </th>
+                            <th style="color:white"> Title </th>
+                            <th style="color:white"> Category </th>
+                            <th style="color:white"> Operations </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int totalCount = ViewBag.TotalCount ?? 0;
+                            bool isSuperAdmin = User.IsInRole("SuperAdmin");
+                            var blogCategories = ViewBag.BlogCategories as List<SelectListItem>;
+                        }
+
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr id="row-@item.Id">
+                                <td>
+                                    @foreach (var image in item.Images)
+                                    {
+                                        <img src="@image.Image" alt="Blog Image" width="100" height="100" />
+                                    }
+                                </td>
+                                <td style="color:white">@item.Title</td>
+                                <td style="color:white">@blogCategories.FirstOrDefault(c => c.Value == item.BlogCategoryId.ToString())?.Text</td>
+                                <td>
+                                    <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-outline-secondary">Detail</a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">Edit</a>
+                                    @if (totalCount > 1 || isSuperAdmin)
+                                    {
+                                        <button class="btn btn-danger delete-post" data-id="@item.Id">Delete</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        @if (Model.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex - 1)">Previous</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link">Previous</a>
+                            </li>
+                        }
+
+                        @for (var i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                            </li>
+                        }
+
+                        @if (Model.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex + 1)">Next</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link">Next</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.delete-post').forEach(button => {
+            button.addEventListener('click', async function () {
+                const id = this.dataset.id;
+                try {
+                    const response = await fetch(`/Admin/BlogPost/Delete/${id}`, {
+                        method: 'POST'
+                    });
+
+                    if (response.ok) {
+                        const row = document.getElementById(`row-${id}`);
+                        if (row) row.remove();
+                    } else {
+                        alert("Delete failed.");
+                    }
+                } catch (err) {
+                    console.error("Error deleting:", err);
+                    alert("An error occurred while deleting.");
+                }
+            });
+        });
+    });
+</script>
+

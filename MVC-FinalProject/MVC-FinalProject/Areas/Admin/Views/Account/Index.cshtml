@@ -1,0 +1,53 @@
+﻿@model IEnumerable<UserRole>
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="card-body">
+            <h4 class="card-title" style="font-size: 31px; margin-left: 25pc;">Users</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="color:white">UserName</th>
+                            <th style="color:white">FullName</th>
+                            <th style="color:white">Email</th>
+                            <th style="color:white">Roles</th>
+                            <th style="color:white">Operations</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="color:white">@item.Username</td>
+                                <td style="color:white">@item.FullName</td>
+                                <td style="color:white">@item.Email</td>
+                                <td style="color:white">
+                                    @if (item.Roles != null && item.Roles.Any())
+                                    {
+                                        <ul>
+                                            @foreach (var role in item.Roles)
+                                            {
+                                                <li>@role</li>
+                                            }
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <span>No roles</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-action="AddRole" asp-route-username="@item.Username" class="btn btn-outline-secondary">Add Role</a>
+
+                                    <a asp-action="RemoveRole" asp-route-username="@item.Username" class="btn btn-outline-danger">Remove Role</a>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

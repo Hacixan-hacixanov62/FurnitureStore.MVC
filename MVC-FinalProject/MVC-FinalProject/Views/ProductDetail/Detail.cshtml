@@ -1,0 +1,954 @@
+﻿@section Css{
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .review {
+            margin-bottom: 20px;
+        }
+
+        .content-comment-container {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .review-author {
+            font-weight: bold;
+        }
+
+        .review-time {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .edit-review-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #007bff;
+            font-size: 0.9rem;
+        }
+
+            .edit-review-btn:hover {
+                text-decoration: underline;
+            }
+
+        .review-comment-text {
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        form[id^="edit-form-"] {
+            margin-top: 15px;
+        }
+
+        .edit-form-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+        }
+
+
+
+        /* add to cart butonu */
+
+        #addToCartBtn {
+            width: 355%;
+            padding: 13px 23px;
+            background-color: transparent;
+            border: 1px solid rgb(0, 0, 0);
+            color: rgb(0, 0, 0);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            #addToCartBtn:not(:disabled):hover {
+                background-color: #000;
+                color: #fff;
+            }
+
+            #addToCartBtn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                border-style: dashed;
+            }
+
+
+
+
+
+        /* color ui ucun */
+
+        .color-swatches {
+            display: flex;
+            gap: 10px;
+            list-style: none;
+            padding: 0;
+        }
+
+            .color-swatches li {
+                position: relative;
+            }
+
+            .color-swatches input[type="radio"] {
+                display: none;
+            }
+
+            .color-swatches label {
+                display: block;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                border: 2px solid #ccc;
+                cursor: pointer;
+                transition: border 0.3s ease;
+            }
+
+            .color-swatches input[type="radio"]:checked + label {
+                border: 3px solid black;
+            }
+
+            .color-swatches label:hover {
+                opacity: 0.8;
+            }
+
+    </style>
+}
+
+
+
+@model ProductReviewPage
+<div id="site-main" class="site-main">
+    <div id="main-content" class="main-content">
+        <div id="primary" class="content-area">
+            <div id="title" class="page-title" style="background-image: url(/assets/img/@Model.Settings.FirstOrDefault(x => x.Key == "ShopBanner")?.Value);">
+                <div class="section-container">
+                    <div class="content-title-heading">
+                        <h1 class="text-title-heading">@Model.ProductName</h1>
+                    </div>
+                    <div class="breadcrumbs">
+                        <a asp-controller="Home" asp-action="Index">Home</a><span class="delimiter"></span>
+                        <a asp-controller="Shop" asp-action="Index">Shop</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content" class="site-content" role="main">
+                <div class="shop-details zoom">
+                    <div class="product-top-info">
+                        <div class="section-padding">
+                            <div class="section-container p-l-r">
+                                <div class="row">
+                                    <!-- Product Images -->                              
+                                    <!-- Product Images Section -->
+                                    <div class="product-images col-lg-7 col-md-12 col-12">
+                                        <div class="row">
+                                            <!-- Thumbnails -->
+                                            <div class="col-md-2">
+                                                <div class="thumbnail-container">
+                                                    <button class="thumbnail-scroll-btn scroll-up" id="scrollUp" disabled>
+                                                        <i class="fa fa-chevron-up"></i>
+                                                    </button>
+                                                    <div class="thumbnail-wrapper">
+                                                        <div class="thumbnail-list" id="thumbnailList">
+                                                            @foreach (var item in Model.Images)
+                                                            {
+                                                                <div class="thumbnail-item" data-index="@Model.Images.ToList().IndexOf(item)">
+                                                                    <img src="@item.Img" alt="Product Image @(Model.Images.ToList().IndexOf(item) + 1)">
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <button class="thumbnail-scroll-btn scroll-down" id="scrollDown">
+                                                        <i class="fa fa-chevron-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Main Image -->
+                                            <div class="col-md-10">
+                                                <div class="main-image-container">
+                                                    <div class="main-image-wrapper">
+                                                        <img id="mainProductImage" src="@Model.Images.FirstOrDefault(i => i.IsMain)?.Img" alt="Main Product Image">
+
+                                                        <!-- Navigation Arrows -->
+                                                        <button class="nav-arrow prev-arrow" id="prevArrow">
+                                                            <i class="fa fa-chevron-left"></i>
+                                                        </button>
+                                                        <button class="nav-arrow next-arrow" id="nextArrow">
+                                                            <i class="fa fa-chevron-right"></i>
+                                                        </button>
+
+                                                        <!-- Image Counter -->
+                                                        <div class="image-counter">
+                                                            <span id="currentImageNum">1</span> / <span id="totalImages">@Model.Images.Count</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Product Info -->
+                                    <div class="product-info col-lg-5 col-md-12 col-12">
+                                        <h1 class="title">@Model.ProductName</h1>
+                                            <span class="price"><ins><span>@Model.Price</span></ins></span>
+                                        <div class="description">
+                                            <p>@Model.Description</p>
+                                        </div>
+
+                                                                    
+                                            <script>
+                                                document.querySelectorAll('.color-swatch').forEach(function (el) {
+                                                    el.addEventListener('click', function () {
+                                                        const imgUrl = el.getAttribute('data-img');
+                                                        const mainImg = document.getElementById('main-product-image');
+                                                        if (imgUrl && mainImg) {
+                                                            mainImg.src = imgUrl;
+                                                        }
+                                                    });
+                                                });
+                                            </script>
+         
+
+                                        <!-- Cart Buttons -->
+                                        <div class="buttons">                                       
+                                            <form id="addToBasketForm">
+                                                <input type="hidden" name="productId" value="@Model.ProductId" />
+                                                <div class="variations">
+                                                    <table cellspacing="0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="label">Color</td>
+                                                                <td class="attributes">
+                                                                    <ul class="color-swatches">
+                                                                        @foreach (var color in Model.ColorList)
+                                                                        {
+                                                                            <li>
+                                                                                <input type="radio" id="color-@color.Id" name="colorId" value="@color.Id" required />
+                                                                                <label for="color-@color.Id" style="background-color:@color.Name;" title="@color.Name"></label>
+                                                                            </li>
+                                                                        }
+                                                                    </ul>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <div class="buttons">
+                                                    <div class="add-to-cart-wrap">
+                                                        <div class="btn-add-cart">
+                                                            <button type="submit"
+                                                                    class="button product-btn"
+                                                                    id="addToCartBtn"
+                                                                    disabled>
+                                                                Add to cart
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                            <div id="basketMessage" style="margin-top: 10px;"></div>
+
+
+
+
+
+                                        </div>
+                                        <div class="product-meta">
+                                            <span class="posted-in">Category: @Model.Category</span>
+                                            <span class="tagged-as">Tags: @Model.Tags.FirstOrDefault()</span>
+                                        </div>
+
+                                        <div class="social-share">
+                                            <a href="#" class="share-facebook"><i class="fa fa-facebook"></i>Facebook</a>
+                                            <a href="#" class="share-twitter"><i class="fa fa-twitter"></i>Twitter</a>
+                                            <a href="#" class="share-pinterest"><i class="fa fa-pinterest"></i>Pinterest</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews Tab -->
+                    <div class="product-tabs">
+                        <div class="section-padding">
+                            <div class="section-container p-l-r">
+                                <div class="product-tabs-wrap">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#reviews" role="tab">Reviews (@Model.Reviews.Count)</a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade" id="reviews" role="tabpanel">
+                                            <div id="reviews" class="product-reviews">
+                                                <div id="comments">
+                                                    <h2 class="reviews-title">@Model.Reviews.Count review(s) for <span>@Model.ProductName</span></h2>
+
+                                                    <ol class="comment-list">
+                                                        @foreach (var review in Model.Reviews)
+                                                        {
+                                                            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                                                            <li class="review" data-review-id="@review.Id">
+                                                                <div class="content-comment-container">
+                                                                    <div class="comment-container">
+                                                                        <div class="comment-text">
+                                                                            <div class="review-time">@review.CreatedAt.ToString("M/d/yyyy")</div>
+                                                                            @if (User.Identity.IsAuthenticated && userId == review.AppUserId)
+                                                                            {
+                                                                                <button type="button" class="btn btn-link btn-sm edit-review-btn" onclick="toggleEditForm(@review.Id)">
+                                                                                    <i class="fa-solid fa-pencil" style="color: #000000;"></i>
+                                                                                </button>
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="description">
+                                                                        <p class="review-comment-text">@review.Comment</p>
+                                                                        <p><i class="fa-regular fa-user"></i> @review.UserName</p>
+                                                                    </div>
+
+                                                                    @if (User.Identity.IsAuthenticated && userId == review.AppUserId)
+                                                                    {
+                                                                      <form asp-action="EditReview" method="post" id="edit-form-@review.Id" style="display:none;"> 
+                                                                          <input type="hidden" name="Id" value="@review.Id" /> 
+                                                                          <input type="hidden" name="AppUserId" value="@review.AppUserId" />
+                                                                          <input type="hidden" name="ProductId" value="@Model.ProductId" /> 
+                                                                          <div class="form-group"> 
+                                                                              <label>Comment</label>
+                                                                              <textarea name="Comment" class="form-control">@review.Comment</textarea> 
+                                                                          </div> 
+                                                                          <div class="edit-form-buttons"> 
+                                                                              @* <button type="submit" class="btn btn-sm">Save</button> *@
+                                                                              <input name="submit" type="submit" id="submit" class="button-outline" value="Save">
+
+                                                                                <button type="button" class="btn button-outline btn-sm" onclick="toggleEditForm(@review.Id)">Cancel</button>
+                                                                            </div> 
+                                                                      </form> 
+                                                                        <form method="post" class="delete-review-form" data-review-id="@review.Id" data-product-id="@Model.ProductId">
+                                                                            <input type="hidden" name="id" value="@review.Id" />
+                                                                            <input type="hidden" name="productId" value="@Model.ProductId" />
+                                                                            <button type="submit" style="margin-left: 27pc; ">
+                                                                                <i class="fa-solid fa-delete-left fa-sm" style="color: #d21919;"></i>
+                                                                            </button>
+                                                                        </form>
+                                                                    }
+                                                                </div>
+                                                            </li>
+                                                        }
+                                                    </ol>
+
+                                                </div>
+
+                                                <!-- Review Form -->
+                                                <div id="review-form">
+                                                    <div id="respond" class="comment-respond">
+                                                        <span id="reply-title" class="comment-reply-title">Add a review</span>
+                                                      
+                                                        <form id="add-review-form" asp-controller="ProductDetail" asp-action="AddReview" method="post">
+                                                            <input type="hidden" name="ProductId" value="@Model.ProductId" />
+
+                                                            <div class="form-group">
+                                                                <label>Name *</label>
+                                                                <input name="UserName" type="text" class="form-control" value="@User.Identity.Name" required />
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label>Email *</label>
+                                                                <input name="UserEmail" type="email" class="form-control" required />
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label>Your Review *</label>
+                                                                <textarea name="Comment" class="form-control" rows="5" required minlength="3" maxlength="2000"></textarea>
+                                                            </div>
+
+                                                            @* <button type="submit" class="btn ">Submit Review</button> *@
+                                                            <div class="form-group full-width">
+                                                                <input name="submit" type="submit" id="submit" class=" button-outline" value="Post Comment">
+                                                            </div>
+                                                        </form>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    /* Product Image Slider Styles - Updated */
+    .product-images {
+        position: relative;
+    }
+
+    /* Thumbnail Container */
+    .thumbnail-container {
+        position: relative;
+        height: 400px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .thumbnail-scroll-btn {
+        background: #fff;
+        border: 1px solid #ddd;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+
+        .thumbnail-scroll-btn:hover:not(:disabled) {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+
+        .thumbnail-scroll-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    .thumbnail-wrapper {
+        flex: 1;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+
+    .thumbnail-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    /* Updated thumbnail styles - removed blue border */
+    .thumbnail-item {
+        width: 70px;
+        height: 70px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #f9f9f9;
+    }
+
+        .thumbnail-item:hover {
+            border-color: #999;
+            transform: scale(1.05);
+        }
+
+        /* Removed blue border - now uses gray */
+        .thumbnail-item.active {
+            border-color: #666;
+            box-shadow: 0 0 0 2px rgba(102, 102, 102, 0.2);
+        }
+
+        .thumbnail-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    /* Hide the old slick elements */
+    .img-item.slick-slide {
+        display: none;
+    }
+
+    /* Main Image Container */
+    .main-image-container {
+        position: relative;
+    }
+
+    .main-image-wrapper {
+        position: relative;
+        background: #f9f9f9;
+        border-radius: 12px;
+        overflow: hidden;
+        aspect-ratio: 1;
+    }
+
+    #mainProductImage {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: opacity 0.3s ease;
+    }
+
+    /* Navigation Arrows */
+    .nav-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid #ddd;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+
+    .main-image-wrapper:hover .nav-arrow {
+        opacity: 1;
+    }
+
+    .nav-arrow:hover {
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .prev-arrow {
+        left: 15px;
+    }
+
+    .next-arrow {
+        right: 15px;
+    }
+
+    /* Image Counter */
+    .image-counter {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    /* Mobile Responsive */
+    media (max-width: 768px) {
+        .thumbnail-container
+
+    {
+        height: auto;
+        flex-direction: row;
+        margin-bottom: 15px;
+    }
+
+    .thumbnail-scroll-btn {
+        display: none;
+    }
+
+    .thumbnail-wrapper {
+        margin: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .thumbnail-list {
+        flex-direction: row;
+        padding-bottom: 5px;
+    }
+
+    .thumbnail-item {
+        flex-shrink: 0;
+        width: 60px;
+        height: 60px;
+    }
+
+    .nav-arrow {
+        opacity: 1;
+        width: 35px;
+        height: 35px;
+    }
+
+    .prev-arrow {
+        left: 10px;
+    }
+
+    .next-arrow {
+        right: 10px;
+    }
+
+    }
+
+    media (max-width: 480px) {
+        .thumbnail-item
+
+    {
+        width: 50px;
+        height: 50px;
+    }
+
+    .nav-arrow {
+        width: 30px;
+        height: 30px;
+    }
+
+    .image-counter {
+        bottom: 10px;
+        right: 10px;
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    }
+</style>
+<script>
+     // Updated Product Image Slider JavaScript
+    class ProductImageSlider {
+      constructor() {
+        this.currentIndex = 0
+        this.thumbnailStartIndex = 0
+        this.thumbnailsVisible = 4
+        this.images = []
+        this.init()
+      }
+
+      init() {
+        this.collectImages()
+        this.bindEvents()
+        this.setInitialImage()
+        this.updateDisplay()
+        this.updateThumbnailScroll()
+      }
+
+      collectImages() {
+        const thumbnails = document.querySelectorAll(".thumbnail-item")
+        thumbnails.forEach((thumb, index) => {
+          const img = thumb.querySelector("img")
+          this.images.push({
+            src: img.src,
+            alt: img.alt || `Product Image ${index + 1}`,
+          })
+        })
+
+        // Update total images count
+        const totalImagesElement = document.getElementById("totalImages")
+        if (totalImagesElement) {
+          totalImagesElement.textContent = this.images.length
+        }
+      }
+
+      setInitialImage() {
+        // Check if there's a main image set in the HTML
+        const mainImg = document.getElementById("mainProductImage")
+        if (mainImg && mainImg.src) {
+          // Find the index of the main image in our images array
+          const mainImageIndex = this.images.findIndex((img) => img.src === mainImg.src)
+          if (mainImageIndex !== -1) {
+            this.currentIndex = mainImageIndex
+          }
+        }
+      }
+
+      bindEvents() {
+        // Thumbnail clicks
+        document.querySelectorAll(".thumbnail-item").forEach((thumb, index) => {
+          thumb.addEventListener("click", (e) => {
+            e.preventDefault()
+            this.goToImage(index)
+          })
+        })
+
+        // Navigation arrows
+        const prevArrow = document.getElementById("prevArrow")
+        const nextArrow = document.getElementById("nextArrow")
+
+        if (prevArrow) {
+          prevArrow.addEventListener("click", () => {
+            this.previousImage()
+          })
+        }
+
+        if (nextArrow) {
+          nextArrow.addEventListener("click", () => {
+            this.nextImage()
+          })
+        }
+
+        // Thumbnail scroll buttons
+        const scrollUp = document.getElementById("scrollUp")
+        const scrollDown = document.getElementById("scrollDown")
+
+        if (scrollUp) {
+          scrollUp.addEventListener("click", () => {
+            this.scrollThumbnailsUp()
+          })
+        }
+
+        if (scrollDown) {
+          scrollDown.addEventListener("click", () => {
+            this.scrollThumbnailsDown()
+          })
+        }
+
+        // Keyboard navigation
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowLeft") {
+            this.previousImage()
+          } else if (e.key === "ArrowRight") {
+            this.nextImage()
+          }
+        })
+
+        // Touch/swipe support for mobile
+        let startX = 0
+        let endX = 0
+
+        const mainImage = document.getElementById("mainProductImage")
+        if (mainImage) {
+          mainImage.addEventListener("touchstart", (e) => {
+            startX = e.touches[0].clientX
+          })
+
+          mainImage.addEventListener("touchend", (e) => {
+            endX = e.changedTouches[0].clientX
+            this.handleSwipe(startX, endX)
+          })
+        }
+      }
+
+      handleSwipe(startX, endX) {
+        const threshold = 50
+        const diff = startX - endX
+
+        if (Math.abs(diff) > threshold) {
+          if (diff > 0) {
+            this.nextImage()
+          } else {
+            this.previousImage()
+          }
+        }
+      }
+
+      goToImage(index) {
+        if (index >= 0 && index < this.images.length) {
+          this.currentIndex = index
+          this.updateDisplay()
+          this.ensureThumbnailVisible(index)
+        }
+      }
+
+      nextImage() {
+        const nextIndex = (this.currentIndex + 1) % this.images.length
+        this.goToImage(nextIndex)
+      }
+
+      previousImage() {
+        const prevIndex = this.currentIndex === 0 ? this.images.length - 1 : this.currentIndex - 1
+        this.goToImage(prevIndex)
+      }
+
+      updateDisplay() {
+        // Update main image
+        const mainImg = document.getElementById("mainProductImage")
+        if (mainImg && this.images[this.currentIndex]) {
+          mainImg.src = this.images[this.currentIndex].src
+          mainImg.alt = this.images[this.currentIndex].alt
+        }
+
+        // Update image counter
+        const currentImageNum = document.getElementById("currentImageNum")
+        if (currentImageNum) {
+          currentImageNum.textContent = this.currentIndex + 1
+        }
+
+        // Update active thumbnail
+        document.querySelectorAll(".thumbnail-item").forEach((thumb, index) => {
+          if (index === this.currentIndex) {
+            thumb.classList.add("active")
+          } else {
+            thumb.classList.remove("active")
+          }
+        })
+      }
+
+      ensureThumbnailVisible(index) {
+        if (window.innerWidth > 768) {
+          // Desktop only
+          if (index < this.thumbnailStartIndex) {
+            this.thumbnailStartIndex = index
+            this.updateThumbnailScroll()
+          } else if (index >= this.thumbnailStartIndex + this.thumbnailsVisible) {
+            this.thumbnailStartIndex = index - this.thumbnailsVisible + 1
+            this.updateThumbnailScroll()
+          }
+        }
+      }
+
+      scrollThumbnailsUp() {
+        if (this.thumbnailStartIndex > 0) {
+          this.thumbnailStartIndex--
+          this.updateThumbnailScroll()
+        }
+      }
+
+      scrollThumbnailsDown() {
+        if (this.thumbnailStartIndex < this.images.length - this.thumbnailsVisible) {
+          this.thumbnailStartIndex++
+          this.updateThumbnailScroll()
+        }
+      }
+
+      updateThumbnailScroll() {
+        if (window.innerWidth > 768) {
+          // Desktop only
+          const thumbnailList = document.getElementById("thumbnailList")
+          if (thumbnailList) {
+            const translateY = -this.thumbnailStartIndex * 80 // 70px height + 10px gap
+            thumbnailList.style.transform = `translateY(${translateY}px)`
+          }
+
+          // Update scroll button states
+          const scrollUp = document.getElementById("scrollUp")
+          const scrollDown = document.getElementById("scrollDown")
+
+          if (scrollUp) {
+            scrollUp.disabled = this.thumbnailStartIndex === 0
+          }
+
+          if (scrollDown) {
+            scrollDown.disabled = this.thumbnailStartIndex >= this.images.length - this.thumbnailsVisible
+          }
+        }
+      }
+    }
+
+    // Initialize slider when DOM is loaded
+    document.addEventListener("DOMContentLoaded", () => {
+      new ProductImageSlider()
+    })
+
+    // Handle window resize
+    window.addEventListener("resize", () => {
+      // Reset thumbnail scroll on mobile/desktop switch
+      const thumbnailList = document.getElementById("thumbnailList")
+      if (thumbnailList && window.innerWidth <= 768) {
+        thumbnailList.style.transform = "translateY(0)"
+      }
+    })
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("addToBasketForm");
+        const addToCartBtn = document.getElementById("addToCartBtn");
+
+        const colorInputs = document.querySelectorAll('input[name="colorId"]');
+        colorInputs.forEach(input => {
+            input.addEventListener("change", () => {
+                addToCartBtn.disabled = false;
+            });
+        });
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const data = new URLSearchParams(formData);
+
+            fetch("/Basket/AddToBasket", {
+                method: "POST",
+                body: data,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(res => {
+                if (res.status === 401) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Please login',
+                        text: 'You need to login to add product to cart',
+                        confirmButtonText: 'Login now'
+                    }).then(() => {
+                        window.location.href = "/Account/Login";
+                    });
+                    return;
+                }
+
+                return res.json();
+            })
+            .then(response => {
+                if (!response) return;
+
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to cart',
+                        text: response.message || 'Product successfully added to your basket!',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message || 'Failed to add product to cart.'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!',
+                });
+            });
+        });
+    });
+</script>
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/assets/js/product-detail.js"></script>
+}

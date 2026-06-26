@@ -1,0 +1,23 @@
+﻿@model SettingEditVM
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="container mt-5">
+            <form class="forms-sample" asp-action="Edit" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label asp-for="Key">Key </label>
+                    <input asp-for="Key" class="form-control" maxlength="1000" />
+                    <span class="text-danger" asp-validation-for="Key" style="color:white"></span>
+                </div> 
+                
+                <div class="form-group">
+                    <label asp-for="Value">Value </label>
+                    <input asp-for="Value" class="form-control" maxlength="1000" />
+                    <span class="text-danger" asp-validation-for="Value" style="color:white"></span>
+                </div>
+                <button type="submit" class="btn btn-primary me-2">Submit</button>
+                <a asp-action="Index" class="btn btn-outline-primary mt-3" style="margin-bottom: 1pc;">← Back</a>
+            </form>
+        </div>
+    </div>
+</div>

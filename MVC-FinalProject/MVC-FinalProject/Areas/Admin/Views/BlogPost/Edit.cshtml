@@ -1,0 +1,141 @@
+﻿@model BlogPostEdit
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <input type="hidden" name="MainImageId" id="mainImageHidden" value="@Model.MainImageId" />
+            <div class="form-group mt-3">
+                <label asp-for="Images">Select New Images:</label>
+                <input asp-for="Images" type="file" class="form-control" multiple accept="image/*"/>
+                <span class="text-danger" asp-validation-for="Images"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="BlogCategoryId">Choose Category</label>
+                <select asp-for="BlogCategoryId" asp-items="ViewBag.BlogCategories" class="form-control"></select>
+                <span asp-validation-for="BlogCategoryId" class="text-danger"></span>
+            </div>
+
+            <div id="blog-container" data-route-id="@Model.Id">
+                @if (Model.ExistingImages != null && Model.ExistingImages.Any())
+                {
+                    <div class="form-group mt-4">
+                        <label>Existing Images</label>
+                        <div class="row">
+                            @foreach (var item in Model.ExistingImages)
+                            {
+                                <div class="col-md-3 text-center mb-3" id="image-@item.Id">
+                                    <img src="@item.Image" width="100" height="100" class="mb-2" />
+                                    <div class="form-check">
+                                        <label>
+                                            <input type="radio" name="MainImageId" value="@item.Id" @(item.IsMain ? "checked" : "") />
+                                            Main Image
+                                        </label>
+                                    </div>
+                                    @if (!(Model.ExistingImages.Count == 1 && item.IsMain))
+                                    {
+                                        <button type="button" class="btn btn-outline-danger btn-sm mt-2" onclick="deleteImage(@item.Id)">Delete</button>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Title"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="HighlightText"></label>
+                <input asp-for="HighlightText" class="form-control" />
+                <span asp-validation-for="HighlightText" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Index" class="btn btn-outline-primary">← Back</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    function updateDeleteButtonsVisibility() {
+        const images = document.querySelectorAll('[id^="image-"]');
+        images.forEach(imgDiv => {
+            const deleteBtn = imgDiv.querySelector("button");
+            if (!deleteBtn) return;
+            deleteBtn.style.display = (images.length === 1) ? "none" : "inline-block";
+        });
+    }
+
+    function deleteImage(imageId) {
+        const blogPostId = document.getElementById("blog-container")?.dataset.routeId;
+        if (!blogPostId) {
+            console.error("BlogPost ID not found!");
+            return;
+        }
+
+        fetch(`/Admin/BlogPost/DeleteImage?blogPostId=${blogPostId}&blogPostImageId=${imageId}`, {
+            method: "DELETE"
+        })
+        .then(async response => {
+            if (!response.ok) {
+                const error = await response.json();
+                console.error("Error deleting image:", error.message);
+                return;
+            }
+
+            const deletedImageDiv = document.getElementById(`image-${imageId}`);
+            if (!deletedImageDiv) return;
+
+            const wasMain = deletedImageDiv.querySelector('input[type="radio"]').checked;
+
+            deletedImageDiv.remove();
+
+            const remainingRadios = document.querySelectorAll('#blog-container input[type="radio"]');
+
+            if (wasMain && remainingRadios.length > 0) {
+                // ✅ Yeni şəkli seç radio kimi
+                remainingRadios[0].checked = true;
+
+                // ✅ Hidden input-a da yaz
+                const hiddenInput = document.getElementById('mainImageHidden');
+                if (hiddenInput) {
+                    hiddenInput.value = remainingRadios[0].value;
+                }
+            }
+
+            updateDeleteButtonsVisibility();
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    }
+
+    function syncRadioToHiddenInput() {
+        // 🔁 Hər radio seçiləndə `MainImageId` gizli input da yenilənsin
+        document.querySelectorAll('input[name="MainImageId"][type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                const hiddenInput = document.getElementById('mainImageHidden');
+                if (this.checked && hiddenInput) {
+                    hiddenInput.value = this.value;
+                }
+            });
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        updateDeleteButtonsVisibility();
+        syncRadioToHiddenInput();
+    });
+</script>

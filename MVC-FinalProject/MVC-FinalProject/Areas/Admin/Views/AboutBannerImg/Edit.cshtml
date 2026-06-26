@@ -1,0 +1,20 @@
+﻿@model AboutBannerImgEdit
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="container mt-5">
+            <form class="forms-sample" asp-action="Edit" method="post" enctype="multipart/form-data">
+
+                <div class="form-group">
+                    <label asp-for="Img">Select New Image: </label>
+                    <input asp-for="Img" class="form-control" type="file" />
+                    <span class="text-danger" asp-validation-for="Img"></span>
+                </div>             
+
+                <button type="submit" class="btn btn-primary me-2">Submit</button>
+                <a asp-action="Index" class="btn btn-outline-primary mt-3" style="margin-bottom: 1pc;">← Back</a>
+
+            </form>
+        </div>
+    </div>
+</div>

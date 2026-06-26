@@ -1,0 +1,60 @@
+﻿
+@model IEnumerable<Subscription>
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="card-body">
+            <h4 class="card-title" style="font-size: 31px; margin-left: 25pc;">Subscription</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="color:white"> Email </th>
+                            <th style="color:white"> Subscribe Date </th>
+                            <th style="color:white"> Operations </th>
+                        </tr>
+                    </thead>
+                    <tbody id="subscription-table-body">
+                        @foreach (var item in Model)
+                        {
+                            <tr id="row-@item.Email.Replace("@","_").Replace(".","_")">
+                                <td style="color:white"> @item.Email</td>
+                                <td style="color:white">@item.CreatedDate.ToString("MM/dd/yyyy")</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm unsubscribe-btn" data-email="@item.Email">Unsubscribe</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.unsubscribe-btn').forEach(button => {
+            button.addEventListener('click', async function() {
+                const email = this.dataset.email;
+                try {
+                    const response = await fetch('/Admin/Subscription/Unsubscribe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ Email: email })
+                    });
+
+                    if (response.ok) {
+                        this.closest('tr').remove();
+                    } else {
+                        alert('Unsubscribe failed.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred.');
+                }
+            });
+        });
+    });
+
+</script>

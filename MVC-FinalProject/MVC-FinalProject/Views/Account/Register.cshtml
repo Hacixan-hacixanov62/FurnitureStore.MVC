@@ -1,0 +1,254 @@
+﻿@using MVC_FinalProject.Models.Account
+@model Register
+
+<div class="clear"></div>
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<div class="page-login-register">
+    <div class="row" style="margin-left: 1pc; margin-right: 2px;">
+        <div class="col-lg-6 col-md-6 col-sm-12" style="margin-left: 20pc;">
+            <div class="box-form-login">
+                <h2 class="register">Register</h2>
+                <div class="box-content">
+                    <div class="form-register">
+                        <form id="registerForm" method="post" asp-controller="Account" asp-action="Register">
+                            @Html.AntiForgeryToken()
+
+                            <div class="fullname">
+                                <label>FullName <span class="required">*</span></label>
+                                <input type="text" class="form-control form-control-user input-text" asp-for="FullName" />
+                                <span class="text-danger" asp-validation-for="FullName"></span>
+                            </div>
+
+                            <div class="username">
+                                <label>Username <span class="required">*</span></label>
+                                <input type="text" class="form-control form-control-user input-text" asp-for="UserName" />
+                                <span class="text-danger" asp-validation-for="UserName"></span>
+                            </div>
+
+                            <div class="email">
+                                <label>Email address <span class="required">*</span></label>
+                                <input type="email" class="form-control input-text form-control-user" asp-for="Email" />
+                                <span class="text-danger" asp-validation-for="Email"></span>
+                            </div>
+
+                          @*   <div class="password">
+                                <label>Password <span class="required">*</span></label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control input-text form-control-user" id="password" asp-for="Password" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" onclick="togglePasswordVisibility('password', 'togglePasswordIcon')">
+                                            <i class="fa fa-eye" id="togglePasswordIcon"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Password"></span>
+                            </div>
+
+                            <div class="password">
+                                <label>Confirm Password <span class="required">*</span></label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control input-text form-control-user" id="confirmPassword" asp-for="ConfirmPassword" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmPasswordIcon')">
+                                            <i class="fa fa-eye" id="toggleConfirmPasswordIcon"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <span class="text-danger" asp-validation-for="ConfirmPassword"></span>
+                            </div> *@
+
+                            <div class="password">
+                                <label>Password <span class="required">*</span></label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control input-text form-control-user" id="password" asp-for="Password" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" onclick="togglePasswordVisibility('password', 'togglePasswordIcon')">
+                                            <i class="fa fa-eye" id="togglePasswordIcon"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <span id="capsLockWarningPassword" class="text-warning d-none">Caps Lock is open</span>
+                                <span class="text-danger" asp-validation-for="Password"></span>
+                            </div>
+
+                            <div class="password">
+                                <label>Confirm Password <span class="required">*</span></label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control input-text form-control-user" id="confirmPassword" asp-for="ConfirmPassword" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmPasswordIcon')">
+                                            <i class="fa fa-eye" id="toggleConfirmPasswordIcon"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <span id="capsLockWarningConfirm" class="text-warning d-none">Caps Lock is open</span>
+                                <span class="text-danger" asp-validation-for="ConfirmPassword"></span>
+                            </div>
+
+
+                            <div>
+                                <a asp-controller="Account" asp-action="Login">Do you have an account?</a>
+                            </div>
+                            <div id="validationSummary" class="text-danger"></div>
+
+                            <div class="button-register">
+                                <input type="submit" class="button" name="register" value="Register" />
+                            </div>
+                        </form>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+<br />
+
+<script>
+    function togglePasswordVisibility(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
+
+    function addCapsLockListener(inputId, warningId) {
+        const input = document.getElementById(inputId);
+        const warning = document.getElementById(warningId);
+
+        input.addEventListener("keydown", function (e) {
+            if (e.getModifierState && e.getModifierState("CapsLock")) {
+                warning.classList.remove("d-none");
+            } else {
+                warning.classList.add("d-none");
+            }
+        });
+
+        input.addEventListener("keyup", function (e) {
+            if (e.getModifierState && e.getModifierState("CapsLock")) {
+                warning.classList.remove("d-none");
+            } else {
+                warning.classList.add("d-none");
+            }
+        });
+
+        input.addEventListener("blur", function () {
+            warning.classList.add("d-none"); 
+        });
+    }
+
+    addCapsLockListener("password", "capsLockWarningPassword");
+    addCapsLockListener("confirmPassword", "capsLockWarningConfirm");
+</script>
+<style>
+    .password {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+        .password .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+            .password .input-group .form-control {
+                padding-right: 40px;
+            }
+
+        .password .input-group-append {
+            position: absolute;
+            right: 10px;
+            top: 38%;
+            transform: translateY(-50%);
+            z-index: 10;
+        }
+
+        .password .input-group-text {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+            .password .input-group-text i {
+                color: #666;
+            }
+
+            .password .input-group-text:hover i {
+                color: #333;
+            }
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#registerForm').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+            var url = form.attr('action') || window.location.href;
+            var token = form.find('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                headers: {
+                    "RequestVerificationToken": token
+                },
+                data: form.serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        window.location.href = '/Account/RegisterConfirmation';
+                    } else {
+                        showErrors(response.message);
+                    }
+                },
+                error: function () {
+                    $('#validationSummary').text('An unexpected error occurred.');
+                }
+            });
+        });
+        function showErrors(errors) {
+            $('#validationSummary').empty();
+
+            if (Array.isArray(errors)) {
+                errors.forEach(function (err) {
+                    $('#validationSummary').append('<div>' + err + '</div>');
+                });
+            } else {
+                $('#validationSummary').text(errors);
+            }
+        }
+    });
+</script>
+@section Scripts {
+    <script>
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
+}

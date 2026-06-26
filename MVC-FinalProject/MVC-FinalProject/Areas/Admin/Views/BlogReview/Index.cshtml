@@ -1,0 +1,60 @@
+﻿@model IEnumerable<BlogReview>
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="card-body">
+            <h4 class="card-title" style="font-size: 31px; margin-left: 25pc;">Review</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="color:white"> UserName </th>
+                            <th style="color:white"> Comment </th>
+                            <th style="color:white"> Create At </th>
+                            <th style="color:white"> Operations </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr id="row-@item.Id">
+                                <td style="color:white">@item.UserName</td>
+                                <td style="color:white; white-space: normal; word-break: break-word; max-width: 400px;">@item.Comment</td>
+                                <td style="color:white">@item.CreatedAt.ToString("MM/dd/yyyy")</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm delete-review" data-id="@item.Id">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.delete-review').forEach(button => {
+            button.addEventListener('click', async function () {
+                const id = this.dataset.id;
+                try {
+                    const response = await fetch(`/Admin/BlogReview/Delete/${id}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        const row = document.getElementById(`row-${id}`);
+                        if (row) row.remove();
+                    } else {
+                        alert("Delete failed.");
+                    }
+                } catch (error) {
+                    console.error("Error deleting review:", error);
+                    alert("An error occurred while deleting.");
+                }
+            });
+        });
+    });
+</script>

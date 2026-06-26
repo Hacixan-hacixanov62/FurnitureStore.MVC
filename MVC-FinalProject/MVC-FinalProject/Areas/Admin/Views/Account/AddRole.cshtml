@@ -1,0 +1,36 @@
+﻿@model Role
+
+<div class="main-panel">
+	<div class="content-wrapper" style="width: 65pc;">
+		<div class="container" style="margin-top:100px;margin-left:320px;width: 400px;">
+            <h2>Add Role to User</h2>
+            <hr />
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+            <form asp-action="AddRole" method="post">
+                <input type="hidden" asp-for="Username" />
+
+                <div class="form-group">
+                    <p><strong>User:</strong> @Model.Username</p>
+                    <label asp-for="RoleName"></label>
+                    <select asp-for="RoleName" class="form-control" asp-items="ViewBag.Roles" style="color:white"></select>
+
+
+                    <span asp-validation-for="RoleName" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Add Role</button>
+            </form>
+        </div>
+
+	</div>
+</div>

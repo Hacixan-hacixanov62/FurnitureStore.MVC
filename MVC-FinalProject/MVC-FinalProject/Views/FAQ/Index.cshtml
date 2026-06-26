@@ -1,0 +1,419 @@
+﻿@* @model IEnumerable<AskUsFrom> *@
+
+@* <div id="site-main" class="site-main"> *@
+@* 	<div id="main-content" class="main-content"> *@
+@* 		<div id="primary" class="content-area"> *@
+@* 			<div id="title" class="page-title"> *@
+@* 				<div class="section-container"> *@
+@* 					<div class="content-title-heading"> *@
+@* 						<h1 class="text-title-heading"> *@
+@* 							Frequently Asked Questions *@
+@* 						</h1> *@
+@* 					</div> *@
+@* 					<div class="breadcrumbs"> *@
+@* 						<a asp-controller="Home" asp-action="Index">Home</a><span class="delimiter"></span>Frequently Asked Questions *@
+@* 					</div> *@
+@* 				</div> *@
+@* 			</div> *@
+
+@* 			<div class="section-content"> *@
+@* 				@foreach (var item in Model) *@
+@* 				{ *@
+@* 					<div class="faq-item"> *@
+@* 						<div class="faq-question"> *@
+@* 							<strong>@item.Name:</strong> @item.Message *@
+@* 						</div> *@
+@* 					</div> *@
+@* 				} *@
+@* 			</div> *@
+@* 		</div><!-- #primary --> *@
+@* 	</div><!-- #main-content --> *@
+@* </div> *@
+
+<style>
+    /* FAQ Page Styles */
+    .faq-container {
+        font-family: "Poppins", sans-serif;
+        color: #333;
+        background-color: #fafafa;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        /* Add clearfix to container */
+        overflow: hidden;
+    }
+
+    /* Header Styles */
+    .faq-header {
+        background-color: #f5f2ed;
+        padding: 60px 0;
+        text-align: center;
+        margin-bottom: 50px;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url("/images/furniture-pattern.png");
+        background-size: 200px;
+    }
+
+    .faq-title {
+        font-size: 42px;
+        font-weight: 300;
+        color: #3a3a3a;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+    }
+
+    .breadcrumbs {
+        font-size: 14px;
+        color: #777;
+    }
+
+        .breadcrumbs a {
+            color: #9b7b55;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+            .breadcrumbs a:hover {
+                color: #6d5639;
+            }
+
+    .breadcrumb-separator {
+        margin: 0 10px;
+        color: #ccc;
+    }
+
+    .current-page {
+        color: #777;
+    }
+
+    /* Content Layout - UPDATED to remove floats */
+    .faq-content {
+        width: 100%;
+        margin-bottom: 50px;
+    }
+
+    /* FAQ Intro */
+    .faq-intro {
+        margin-bottom: 40px;
+        font-size: 16px;
+        line-height: 1.6;
+        color: #555;
+    }
+
+        .faq-intro a {
+            color: #9b7b55;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .faq-intro a:hover {
+                text-decoration: underline;
+            }
+
+    /* FAQ Items */
+    .faq-list {
+        margin-bottom: 50px;
+    }
+
+    .faq-item {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .faq-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+    .faq-question-container {
+        display: flex;
+        padding: 25px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .faq-avatar {
+        flex-shrink: 0;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #9b7b55;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 500;
+        margin-right: 20px;
+    }
+
+    .faq-question-content {
+        flex-grow: 1;
+    }
+
+    .faq-question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .faq-customer-name {
+        font-size: 18px;
+        font-weight: 500;
+        color: #333;
+        margin: 0;
+    }
+
+    .faq-date {
+        font-size: 14px;
+        color: #999;
+    }
+
+    .faq-message {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #555;
+    }
+
+    /* FAQ Answer */
+    .faq-answer {
+        display: flex;
+        padding: 20px 25px;
+        background-color: #f9f7f4;
+    }
+
+    .faq-answer-icon {
+        flex-shrink: 0;
+        width: 30px;
+        height: 30px;
+        margin-right: 15px;
+        color: #9b7b55;
+    }
+
+    .faq-answer-content {
+        flex-grow: 1;
+    }
+
+    .faq-answer-header h4 {
+        font-size: 16px;
+        font-weight: 500;
+        color: #9b7b55;
+        margin: 0 0 10px 0;
+    }
+
+    .faq-answer-text {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #555;
+    }
+
+    /* Empty State */
+    .faq-empty {
+        text-align: center;
+        padding: 40px 0;
+        color: #999;
+        font-style: italic;
+    }
+
+    /* Ask Section */
+    .faq-ask-section {
+        background-color: #f5f2ed;
+        padding: 40px;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+        .faq-ask-section h2 {
+            font-size: 24px;
+            font-weight: 500;
+            color: #3a3a3a;
+            margin-bottom: 15px;
+        }
+
+        .faq-ask-section p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+    .btn-ask {
+        display: inline-block;
+        background-color: #9b7b55;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.3s;
+    }
+
+        .btn-ask:hover {
+            background-color: #876a49;
+        }
+
+    /* Sidebar Styles */
+    .faq-categories,
+    .faq-popular {
+        margin-bottom: 40px;
+    }
+
+        .faq-categories h3,
+        .faq-popular h3 {
+            font-size: 18px;
+            font-weight: 500;
+            color: #3a3a3a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .faq-categories ul,
+        .faq-popular ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .faq-categories li,
+        .faq-popular li {
+            margin-bottom: 12px;
+        }
+
+        .faq-categories a,
+        .faq-popular a {
+            color: #555;
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.3s;
+            display: block;
+            padding: 5px 0;
+        }
+
+            .faq-categories a:hover,
+            .faq-popular a:hover {
+                color: #9b7b55;
+            }
+
+            .faq-categories a.active {
+                color: #9b7b55;
+                font-weight: 500;
+            }
+
+    /* Clearfix utility class */
+    .clearfix::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+   
+
+    .faq-sidebar {
+        margin-top: 40px;
+        border-left: none;
+        border-top: 1px solid #eee;
+        padding-top: 40px;
+    }
+
+    .faq-title {
+        font-size: 32px;
+    }
+
+    .faq-question-container {
+        flex-direction: column;
+    }
+
+    .faq-avatar {
+        margin-bottom: 15px;
+        margin-right: 0;
+    }
+
+    .faq-question-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .faq-date {
+        margin-top: 5px;
+    }
+</style>
+
+@model FAQVM
+
+<div id="site-main" class="site-main"> 
+	<div id="main-content" class="main-content">
+        <div id="primary" class="content-area">
+            <div id="title" class="page-title" style="background-image: url(./assets/img/@Model.Setting.FirstOrDefault(x => x.Key == "ContactBanner")?.Value);">
+                <div class="section-container">
+                    <div class="content-title-heading">
+                        <h1 class="text-title-heading">
+                            Frequently Asked Questions
+                        </h1>
+                    </div>
+                    <div class="breadcrumbs">
+                        <a asp-controller="Home" asp-action="Index">Home</a><span class="delimiter"></span>Frequently Asked Questions
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="faq-content">
+                    <div class="faq-intro">
+                        <p>We've compiled answers to the questions we get asked the most about our furniture and services. If you don't find what you're looking for, please don't hesitate to <a asp-controller="Contact" asp-action="Index">contact us</a>.</p>
+                    </div>
+
+                    <div class="faq-list">
+                        @if (Model != null && Model.AskUsFroms.Any())
+                        {
+                            @foreach (var item in Model.AskUsFroms)
+                            {
+                                <div class="faq-item">
+                                    <div class="faq-question-container">
+                                        <div class="faq-avatar">
+                                            <div class="avatar-initials">@(item.Name != null ? item.Name[0].ToString().ToUpper() : "?")</div>
+                                        </div>
+                                        <div class="faq-question-content">
+                                            <div class="faq-question-header">
+                                                <h3 class="faq-customer-name">@item.Name</h3>
+                                                @if (item.CreatedDate != null)
+                                                {
+                                                    <span class="faq-date">@item.CreatedDate.ToString("MMM dd, yyyy")</span>
+                                                }
+                                            </div>
+                                            <div class="faq-message">
+                                                @item.Message
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="faq-empty">
+                                <p>No questions have been asked yet. Be the first to ask!</p>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="faq-ask-section">
+                        <h2>Have a Question?</h2>
+                        <p>We're here to help! Submit your question and we'll get back to you as soon as possible.</p>
+                        <a asp-controller="Contact" asp-action="Index" class="btn-ask">Ask a Question</a>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>

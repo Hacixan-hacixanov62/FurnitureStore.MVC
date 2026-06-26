@@ -1,0 +1,66 @@
+﻿@model IEnumerable<BlogCategory>
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="card-body">
+            <h4 class="card-title" style="font-size: 31px; margin-left: 25pc;">Blog Category:</h4>
+            <div class="table-responsive">
+                <a asp-action="Create" class="btn btn-outline-info mt-4 mb-4">Create</a>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="color:white"> Name </th>
+                            <th style="color:white"> Operations </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int totalCount = ViewBag.TotalCount ?? 0;
+                            bool isSuperAdmin = User.IsInRole("SuperAdmin");
+                        }
+
+                        @foreach (var item in Model)
+                        {
+                            <tr id="row-@item.Id">
+                                <td style="color:white"> @item.Name </td>
+                                <td>
+                                    <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-outline-secondary">Detail</a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">Edit</a>
+
+                                    @if (totalCount > 1 || isSuperAdmin)
+                                    {
+                                        <button class="btn btn-danger delete-blog" data-id="@item.Id">Delete</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.delete-blog').forEach(button => {
+            button.addEventListener('click', async function () {
+                const id = this.dataset.id;
+
+                try {
+                    const response = await fetch(`/Admin/BlogCategory/Delete/${id}`, { method: 'POST' });
+                    if (response.ok) {
+                        document.getElementById(`row-${id}`)?.remove();
+                    } else {
+                        alert("Delete failed.");
+                    }
+                } catch (error) {
+                    console.error("Delete error:", error);
+                    alert("An error occurred during deletion.");
+                }
+            });
+        });
+    });
+</script>
+
+

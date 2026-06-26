@@ -1,0 +1,169 @@
+﻿@* @model IEnumerable<AboutPromo> *@
+
+@* <div class="main-panel"> *@
+@*     <div class="content-wrapper" style="width: 65pc;"> *@
+@*         <div class="card-body"> *@
+@*             <h4 class="card-title" style="font-size: 31px; margin-left: 25pc;">About Promo</h4> *@
+@*             <div class="table-responsive"> *@
+@*                 <a asp-action="Create" class="btn btn-outline-info mt-4 mb-4">Create</a> *@
+@*                 <table class="table table-bordered"> *@
+@*                     <thead> *@
+@*                         <tr> *@
+@*                             <th> Image </th> *@
+@*                             <th> Title </th> *@
+@*                             <th> Description </th> *@
+@*                             <th> Operations </th> *@
+@*                         </tr> *@
+@*                     </thead> *@
+@*                     <tbody> *@
+@*                         @{ *@
+@*                             int totalCount = ViewBag.TotalCount ?? 0; *@
+@*                             bool isSuperAdmin = User.IsInRole("SuperAdmin"); *@
+@*                         } *@
+
+@*                         @foreach (var item in Model) *@
+@*                         { *@
+@*                             <tr id="row-@item.Id"> *@
+@*                                 <td><img src="@item.Image" style="width: 200px; height: 180px" /></td> *@
+@*                                 <td>@item.Title</td> *@
+@*                                 <td>@item.Description</td> *@
+@*                                 <td> *@
+@*                                     <a asp-action="Detail" asp-route-id="@item.Id" style="color:white" class="btn btn-outline-secondary">Detail</a> *@
+@*                                     <a asp-action="Edit" asp-route-id="@item.Id" style="color:white" class="btn btn-outline-warning">Edit</a> *@
+@*                                     @if (totalCount > 1 || isSuperAdmin) *@
+@*                                     { *@
+@*                                         <button class="btn btn-danger delete-promo" data-id="@item.Id">Delete</button> *@
+@*                                     } *@
+@*                                 </td> *@
+@*                             </tr> *@
+@*                         } *@
+@*                     </tbody> *@
+@*                 </table> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
+
+
+
+
+@* <script> *@
+@*     document.addEventListener('DOMContentLoaded', function () { *@
+@*         const deleteButtons = document.querySelectorAll('.delete-promo'); *@
+
+@*         deleteButtons.forEach(button => { *@
+@*             button.addEventListener('click', async function () { *@
+@*                 const id = this.getAttribute('data-id'); *@
+
+@*                 try { *@
+@*                     const response = await fetch(`/Admin/AboutPromo/Delete/${id}`, { *@
+@*                         method: 'POST' *@
+@*                     }); *@
+
+@*                     if (response.ok) { *@
+@*                         const row = document.getElementById(`row-${id}`); *@
+@*                         if (row) row.remove(); *@
+@*                     } else { *@
+@*                         alert("Failed to delete. Server responded with error."); *@
+@*                     } *@
+@*                 } catch (error) { *@
+@*                     console.error("Delete error:", error); *@
+@*                     alert("An error occurred while deleting."); *@
+@*                 } *@
+@*             }); *@
+@*         }); *@
+@*     }); *@
+@* </script> *@
+
+@model IEnumerable<AboutPromo>
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="card-body">
+            <h4 class="card-title" style="font-size: 31px; margin-left: 25pc;">About Promo</h4>
+            <div class="table-responsive">
+                @{
+                    int itemCount = Model.Count();
+                }
+
+                @if (itemCount < 2)
+                {
+                    <a asp-action="Create" class="btn btn-outline-info mt-4 mb-4" id="createButton">Create</a>
+                }
+                else
+                {
+                    <a asp-action="Create" class="btn btn-outline-info mt-4 mb-4" id="createButton" style="display:none;">Create</a>
+                }
+
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="color:white"> Image </th>
+                            <th style="color:white"> Title </th>
+                            <th style="color:white"> Description </th>
+                            <th style="color:white"> Operations </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int totalCount = ViewBag.TotalCount ?? 0;
+                            bool isSuperAdmin = User.IsInRole("SuperAdmin");
+                        }
+
+                        @foreach (var item in Model)
+                        {
+                            <tr id="row-@item.Id">
+                                <td><img src="@item.Image" style="width: 200px; height: 180px" /></td>
+                                <td style="color:white">@item.Title</td>
+                                <td style="color:white">@item.Description</td>
+                                <td>
+                                    <a asp-action="Detail" asp-route-id="@item.Id" style="color:white" class="btn btn-outline-secondary">Detail</a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" style="color:white" class="btn btn-outline-warning">Edit</a>
+                                    @if (totalCount > 1 || isSuperAdmin)
+                                    {
+                                        <button class="btn btn-danger delete-promo" data-id="@item.Id">Delete</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.delete-promo');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', async function () {
+                const id = this.getAttribute('data-id');
+
+                try {
+                    const response = await fetch(`/Admin/AboutPromo/Delete/${id}`, {
+                        method: 'POST'
+                    });
+
+                    if (response.ok) {
+                        const row = document.getElementById(`row-${id}`);
+                        if (row) row.remove();
+                        const remainingRows = document.querySelectorAll('tbody tr').length;
+                        if (remainingRows < 2) {
+                            const createButton = document.getElementById("createButton");
+                            if (createButton) {
+                                createButton.style.display = "inline-block";
+                            }
+                        }
+                    } else {
+                        alert("Failed to delete. Server responded with error.");
+                    }
+                } catch (error) {
+                    console.error("Delete error:", error);
+                    alert("An error occurred while deleting.");
+                }
+            });
+        });
+    });
+</script>

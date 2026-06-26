@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Unblock User";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+<h2>Unblock User</h2>
+
+<form asp-action="UnblockUser" method="post">
+    <div class="form-group">
+        <label>Select a blocked user</label>
+        <select name="userId" class="form-control" asp-items="ViewBag.BlockedUsers" style="color:white">
+            <option value="">-- Select User --</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success mt-2">Unblock</button>
+            <a asp-action="Index" class="btn btn-outline-primary mt-3" style="margin-bottom: 1pc;">← Back</a>
+
+</form>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-info mt-3">@ViewBag.Message</div>
+}
+    </div>
+</div>

@@ -1,0 +1,89 @@
+﻿@model Product
+
+<div class="main-panel">
+    <div class="content-wrapper" style="width: 65pc;">
+        <div class="container mt-5 d-flex justify-content-center">
+<div class="card p-4 shadow-sm">
+    <div class="row">
+            <div class="col-md-5 mb-3 d-flex flex-wrap gap-2">
+                @if (Model.Images != null && Model.Images.Any())
+                {
+                    foreach (var img in Model.Images)
+                    {
+                        <img src="@img" alt="@Model.Name"
+                             class="rounded-circle border border-secondary"
+                             style="width: 70px; height: 70px; object-fit: cover;" />
+                    }
+                }
+                else if (!string.IsNullOrEmpty(Model.MainImage))
+                {
+                    <img src="@Model.MainImage" alt="@Model.Name"
+                         class="rounded-circle border border-secondary"
+                         style="width: 70px; height: 70px; object-fit: cover;" />
+                }
+                else
+                {
+                    <p class="text-muted">No images available</p>
+                }
+            </div>
+
+
+        <div class="col-md-7">
+            <dl class="row">
+                <dt class="col-sm-4">Name:</dt>
+                <dd class="col-sm-8">@Model.Name</dd>
+
+                <dt class="col-sm-4">Price:</dt>
+                <dd class="col-sm-8">$@Model.Price</dd>
+
+                <dt class="col-sm-4">Stock:</dt>
+                <dd class="col-sm-8">@Model.Stock</dd>
+
+                <dt class="col-sm-4">Brand:</dt>
+                <dd class="col-sm-8">@Model.Brand</dd>
+
+                <dt class="col-sm-4">Category:</dt>
+                <dd class="col-sm-8">@Model.Category</dd>
+
+                <dt class="col-sm-4">Colors:</dt>
+                <dd class="col-sm-8">
+                    @if (Model.Colors != null && Model.Colors.Any())
+                    {
+                        foreach (var color in Model.Colors)
+                        {
+                            <span class="badge bg-primary me-1">@color</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted">None</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-4">Tags:</dt>
+                <dd class="col-sm-8">
+                    @if (Model.Tags != null && Model.Tags.Any())
+                    {
+                        foreach (var tag in Model.Tags)
+                        {
+                            <span class="badge bg-warning text-dark me-1">@tag</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted">None</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-4">Description:</dt>
+                <dd class="col-sm-8">@Model.Description</dd>
+            </dl>
+        </div>
+    </div>
+
+    <a asp-action="Index" class="btn btn-secondary mt-4">Back to List</a>
+</div>
+
+        </div>
+    </div>
+</div>
